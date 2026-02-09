@@ -1,0 +1,66 @@
+############################
+# Java / Maven / Spring
+############################
+backend/target/
+*.class
+*.log
+
+# (Importante) NO ignorar Maven Wrapper
+# Se deben commitear: mvnw, mvnw.cmd, .mvn/wrapper/maven-wrapper.jar, .mvn/wrapper/maven-wrapper.properties
+
+############################
+# Config local / secretos
+############################
+.env
+*.env
+
+# Spring: configuración local (privada)
+backend/src/main/resources/application-local.*
+backend/src/test/resources/application-local.*
+
+# Si usas perfiles con secretos, mejor no commitearlos:
+# backend/src/main/resources/application-prod.*
+# backend/src/main/resources/application-secret.*
+
+############################
+# IDEs / Editores
+############################
+# IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# VS Code
+.vscode/
+
+# Eclipse / STS
+.classpath
+.project
+.settings/
+.factorypath
+.apt_generated
+.springBeans
+.sts4-cache/
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+############################
+# Frontend (cuando exista)
+############################
+frontend/node_modules/
+frontend/dist/
+frontend/.next/
+frontend/.cache/
+frontend/.vite/
+
+############################
+# OS / misc
+############################
+.DS_Store
+Thumbs.db
