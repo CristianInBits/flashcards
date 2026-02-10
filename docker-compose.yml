@@ -21,7 +21,7 @@ services:
       - flashcards-network
     healthcheck:
       # Verificar que PostgreSQL está listo antes de iniciar backend
-      test: ["CMD-SHELL", "pg_isready -U flashcards_user"]
+      test: ["CMD-SHELL", "pg_isready -U flashcards_user -d flashcards"]
       interval: 10s    # Cada 10 segundos
       timeout: 5s      # Espera máxima 5 segundos
       retries: 5       # Intenta 5 veces

@@ -2,7 +2,7 @@
 # Este es para DESARROLLO (con hot reload)
 
 # Usar imagen de Node.js
-FROM node:18-alpine
+FROM node:22-alpine
 
 # Directorio de trabajo
 WORKDIR /app
