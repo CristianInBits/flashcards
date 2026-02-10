@@ -1,0 +1,76 @@
+version: '3.8'
+
+# Definición de servicios (contenedores)
+services:
+  
+  # 1. BASE DE DATOS POSTGRESQL
+  postgres:
+    image: postgres:15-alpine  # Imagen oficial de PostgreSQL
+    container_name: flashcards-db
+    environment:
+      # Variables de entorno para configurar PostgreSQL
+      POSTGRES_DB: flashcards           # Nombre de la base de datos
+      POSTGRES_USER: flashcards_user    # Usuario
+      POSTGRES_PASSWORD: flashcards_password  # Contraseña
+    ports:
+      - "5432:5432"  # Puerto: host:contenedor
+    volumes:
+      # Volumen para persistir los datos (no se pierden al reiniciar)
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - flashcards-network
+    healthcheck:
+      # Verificar que PostgreSQL está listo antes de iniciar backend
+      test: ["CMD-SHELL", "pg_isready -U flashcards_user"]
+      interval: 10s    # Cada 10 segundos
+      timeout: 5s      # Espera máxima 5 segundos
+      retries: 5       # Intenta 5 veces
+
+  # 2. BACKEND (SPRING BOOT)
+  backend:
+    build:
+      context: ./backend     # Carpeta donde está el Dockerfile
+      dockerfile: Dockerfile
+    container_name: flashcards-backend
+    environment:
+      # Variables de entorno para Spring Boot
+      # IMPORTANTE: Usamos 'postgres' como host (nombre del servicio)
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/flashcards
+      SPRING_DATASOURCE_USERNAME: flashcards_user
+      SPRING_DATASOURCE_PASSWORD: flashcards_password
+      JWT_SECRET: your-secret-key-change-in-production-must-be-very-long
+    ports:
+      - "8080:8080"  # API REST disponible en http://localhost:8080
+    depends_on:
+      postgres:
+        condition: service_healthy  # Espera a que PostgreSQL esté listo
+    networks:
+      - flashcards-network
+
+  # 3. FRONTEND (REACT + VITE)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: flashcards-frontend
+    ports:
+      - "5173:5173"  # Vite dev server en http://localhost:5173
+    depends_on:
+      - backend  # Espera a que backend esté corriendo
+    networks:
+      - flashcards-network
+    volumes:
+      # Hot reload: los cambios en código se reflejan inmediatamente
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+    stdin_open: true  # Mantiene el contenedor activo
+    tty: true
+
+# Volúmenes nombrados (para persistir datos)
+volumes:
+  postgres_data:  # Los datos de PostgreSQL se guardan aquí
+
+# Red para que los contenedores se comuniquen entre sí
+networks:
+  flashcards-network:
+    driver: bridge
