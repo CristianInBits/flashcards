@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: flashcards-backend
+  
+  # Configuración de la base de datos PostgreSQL
+  datasource:
+    url: jdbc:postgresql://localhost:5432/flashcards
+    username: flashcards_user
+    password: flashcards_password
+    driver-class-name: org.postgresql.Driver
+  
+  # Configuración de JPA (Java Persistence API)
+  jpa:
+    hibernate:
+      ddl-auto: validate  # validate = Flyway maneja las tablas, no Hibernate
+    show-sql: true        # Muestra las queries SQL en consola (útil para debug)
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true  # Formatea el SQL para que sea legible
+  
+  # Configuración de Flyway (migraciones)
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+# Puerto donde corre la aplicación
+server:
+  port: 8080
+
+# Configuración de JWT (lo usaremos en Fase 2)
+jwt:
+  secret: change-this-secret-key-in-production-min-256-bits
+  expiration: 86400000  # 24 horas en milisegundos
