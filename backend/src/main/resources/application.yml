@@ -31,5 +31,5 @@ server:
 
 # Configuración de JWT (lo usaremos en Fase 2)
 jwt:
-  secret: change-this-secret-key-in-production-min-256-bits
-  expiration: 86400000  # 24 horas en milisegundos
+  secret: ${JWT_SECRET:miClaveSecretaPorDefectoParaDesarrolloLocalMuyLarga123}
+  expiration: 86400000
