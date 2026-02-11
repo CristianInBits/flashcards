@@ -38,8 +38,6 @@ public class AuthService {
 
     @Transactional
     public AuthResponse register(RegisterRequest request) {
-        // TODO: Privacy - Ofuscar email en logs de producción (PII)
-        log.info("Intento de registro para email: {}", request.email()); 
 
         String normalizedEmail = normalizeEmail(request.email());
         String normalizedUsername = normalizeUsername(request.username());
@@ -74,8 +72,7 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public AuthResponse login(LoginRequest request) {
-        // TODO: Privacy - Ofuscar email en logs de producción (PII)
-        log.info("Intento de login para email: {}", request.email());
+
         String normalizedEmail = normalizeEmail(request.email());
 
         try {
