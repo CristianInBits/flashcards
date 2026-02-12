@@ -4,22 +4,16 @@ import com.flashcards.backend.dto.request.LoginRequest;
 import com.flashcards.backend.dto.request.RegisterRequest;
 import com.flashcards.backend.dto.response.AuthResponse;
 import com.flashcards.backend.service.AuthService;
-import jakarta.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * AuthController - Endpoints de autenticación
- * 
- * Rutas:
- * POST /api/auth/register - Registrar nuevo usuario
- * POST /api/auth/login - Login de usuario existente
- * 
- * Estas rutas son PÚBLICAS (no requieren JWT)
- */
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor

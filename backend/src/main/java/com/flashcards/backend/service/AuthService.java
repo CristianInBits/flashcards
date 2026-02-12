@@ -58,7 +58,7 @@ public class AuthService {
                 .build();
 
         try {
-            User savedUser = userRepository.save(user);
+            User savedUser = userRepository.saveAndFlush(user);
             log.info("Usuario registrado con éxito. ID: {}", savedUser.getId());
 
             String token = jwtTokenProvider.generateToken(savedUser.getEmail());
