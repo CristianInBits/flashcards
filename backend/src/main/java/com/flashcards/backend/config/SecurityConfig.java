@@ -1,5 +1,6 @@
 package com.flashcards.backend.config;
 
+import com.flashcards.backend.security.CustomAuthenticationEntryPoint;
 import com.flashcards.backend.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +29,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserDetailsService userDetailsService;
     private final CorsConfigurationSource corsConfigurationSource;
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -61,6 +63,10 @@ public class SecurityConfig {
                 .requestMatchers("/actuator/**").permitAll() // TODO: Quitar en producción
                 .requestMatchers("/error").permitAll()
                 .anyRequest().authenticated()
+            )
+
+            .exceptionHandling(exception -> exception
+                .authenticationEntryPoint(authenticationEntryPoint)
             )
             
             .authenticationProvider(authenticationProvider())
