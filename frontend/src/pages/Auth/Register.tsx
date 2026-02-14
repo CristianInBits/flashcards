@@ -47,8 +47,8 @@ export const Register: React.FC = () => {
             newErrors.password = 'La contraseña es obligatoria';
         } else if (formData.password.length < 6) {
             newErrors.password = 'La contraseña debe tener al menos 6 caracteres';
-        } else if (formData.password.length > 255) {
-            newErrors.password = 'La contraseña no puede tener más de 255 caracteres';
+        } else if (formData.password.length > 50) {
+            newErrors.password = 'La contraseña no puede tener más de 50 caracteres';
         }
 
         if (!formData.confirmPassword) {

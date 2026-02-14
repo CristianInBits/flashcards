@@ -7,9 +7,9 @@ export default {
     theme: {
         extend: {
             colors: {
-                primary: '#3B82F6',    // Azul
-                secondary: '#1F2937',  // Gris oscuro
-                accent: '#6366F1',     // Indigo
+                primary: '#3B82F6',
+                secondary: '#1F2937',
+                accent: '#6366F1',
             },
         },
     },
