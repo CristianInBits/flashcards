@@ -1,6 +1,3 @@
--- V1__create_users_table.sql
--- Primera migración: Crear tabla de usuarios
-
 -- Activar la extensión para generar UUIDs automáticamente
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
