@@ -167,7 +167,8 @@ public class DeckService {
         }
 
         if (request.description() != null) {
-            deck.setDescription(request.description());
+            String desc = request.description().trim();
+            deck.setDescription(desc.isBlank() ? null : desc);
             updated = true;
         }
 
