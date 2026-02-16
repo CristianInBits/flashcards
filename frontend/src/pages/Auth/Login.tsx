@@ -6,6 +6,9 @@ import { Button } from '@/components/common/Button';
 import { Alert } from '@/components/common/Alert';
 
 export const Login: React.FC = () => {
+    // ==========================================
+    // LÓGICA
+    // ==========================================
     const navigate = useNavigate();
     const { login } = useAuth();
 
@@ -70,20 +73,38 @@ export const Login: React.FC = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-            <div className="max-w-md w-full space-y-8">
-                {/* Header */}
-                <div className="text-center">
-                    <h2 className="text-3xl font-bold text-gray-900">
-                        Iniciar Sesión
-                    </h2>
-                    <p className="mt-2 text-sm text-gray-600">
-                        Accede a tus flashcards
+            {/* Contenedor principal estilo tarjeta */}
+            <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 space-y-8">
+
+                {/* HEADER VISUAL */}
+                <div className="flex flex-col items-center justify-center text-center">
+                    {/* Contenedor del Icono/Logo */}
+                    <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-4 transform rotate-3 hover:rotate-6 transition-transform">
+                        {/* Icono de Flashcards (SVG) */}
+                        <svg
+                            className="w-10 h-10 text-blue-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                    </div>
+
+                    {/* Título Principal de la App */}
+                    <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+                        Flashcards
+                    </h1>
+
+                    {/* Subtítulo clásico */}
+                    <p className="mt-2 text-sm text-gray-500 font-medium">
+                        Bienvenido de nuevo. Accede a tus tarjetas.
                     </p>
                 </div>
 
-                {/* Formulario */}
+                {/* Formulario (Sigue igual) */}
                 <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-                    {/* Alert de error */}
                     {error && (
                         <Alert variant="error" onClose={() => setError(null)}>
                             {error}
@@ -91,7 +112,6 @@ export const Login: React.FC = () => {
                     )}
 
                     <div className="space-y-4">
-                        {/* Email */}
                         <Input
                             id="email"
                             label="Email"
@@ -105,7 +125,6 @@ export const Login: React.FC = () => {
                             disabled={isLoading}
                         />
 
-                        {/* Password */}
                         <Input
                             id="password"
                             label="Contraseña"
@@ -120,23 +139,21 @@ export const Login: React.FC = () => {
                         />
                     </div>
 
-                    {/* Submit button */}
                     <Button
                         type="submit"
                         variant="primary"
                         size="lg"
                         isLoading={isLoading}
-                        className="w-full"
+                        className="w-full shadow-md"
                     >
                         Iniciar Sesión
                     </Button>
 
-                    {/* Link a registro */}
-                    <div className="text-center text-sm">
-                        <span className="text-gray-600">¿No tienes cuenta? </span>
+                    <div className="text-center text-sm pt-2">
+                        <span className="text-gray-500">¿No tienes cuenta? </span>
                         <Link
                             to="/register"
-                            className="font-medium text-primary hover:text-blue-600"
+                            className="font-semibold text-blue-600 hover:text-blue-500 transition-colors"
                         >
                             Regístrate aquí
                         </Link>

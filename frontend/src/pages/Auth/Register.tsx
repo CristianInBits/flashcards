@@ -98,14 +98,31 @@ export const Register: React.FC = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-            <div className="max-w-md w-full space-y-8">
-                {/* Header */}
-                <div className="text-center">
-                    <h2 className="text-3xl font-bold text-gray-900">
+            <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 space-y-8">
+
+                {/* HEADER VISUAL*/}
+                <div className="flex flex-col items-center justify-center text-center">
+                    {/* Contenedor del Icono/Logo */}
+                    <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-4 transform rotate-3 hover:rotate-6 transition-transform">
+                        <svg
+                            className="w-10 h-10 text-blue-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                    </div>
+
+                    {/* Título Principal */}
+                    <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
                         Crear Cuenta
-                    </h2>
-                    <p className="mt-2 text-sm text-gray-600">
-                        Empieza a crear tus flashcards
+                    </h1>
+
+                    {/* Subtítulo */}
+                    <p className="mt-2 text-sm text-gray-500 font-medium">
+                        Únete a Flashcards y empieza a estudiar.
                     </p>
                 </div>
 
@@ -184,17 +201,18 @@ export const Register: React.FC = () => {
                         variant="primary"
                         size="lg"
                         isLoading={isLoading}
-                        className="w-full"
+                        className="w-full shadow-md"
                     >
                         Registrarse
                     </Button>
 
+
                     {/* Link a login */}
-                    <div className="text-center text-sm">
-                        <span className="text-gray-600">¿Ya tienes cuenta? </span>
+                    <div className="text-center text-sm pt-2">
+                        <span className="text-gray-500">¿Ya tienes cuenta? </span>
                         <Link
                             to="/login"
-                            className="font-medium text-primary hover:text-blue-600"
+                            className="font-semibold text-blue-600 hover:text-blue-500 transition-colors"
                         >
                             Inicia sesión aquí
                         </Link>
