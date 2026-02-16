@@ -20,7 +20,8 @@ public record DeckRequest(
         @Size(max = 255, message = "El título no puede tener más de 255 caracteres")
         String title,
 
-        @Size(max = 500, message = "La descripción no puede tener más de 500 caracteres") String description,
+        @Size(max = 500, message = "La descripción no puede tener más de 500 caracteres")
+        String description,
 
         // Opcional: si no viene, en el service -> []
         String[] tags,
