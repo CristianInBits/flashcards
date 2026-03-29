@@ -7,6 +7,7 @@ import com.flashcards.backend.dto.response.PageResponse;
 import com.flashcards.backend.exception.ResourceNotFoundException;
 import com.flashcards.backend.model.Deck;
 import com.flashcards.backend.model.User;
+import com.flashcards.backend.repository.CardRepository;
 import com.flashcards.backend.repository.DeckRepository;
 import com.flashcards.backend.repository.UserRepository;
 
@@ -29,6 +30,7 @@ import java.util.UUID;
 @Slf4j
 public class DeckService {
 
+    private final CardRepository cardRepository;
     private final DeckRepository deckRepository;
     private final UserRepository userRepository;
 
@@ -227,8 +229,7 @@ public class DeckService {
      * Mapea Deck entity a DeckResponse DTO
      */
     private DeckResponse mapToDeckResponse(Deck deck) {
-        // Por ahora cardCount = 0 (lo implementaremos en la Fase 5)
-        Integer cardCount = 0;
+        Integer cardCount = (int) cardRepository.countByDeck_Id(deck.getId());
 
         DeckResponse.OwnerInfo owner = new DeckResponse.OwnerInfo(
                 deck.getUser().getId(),
