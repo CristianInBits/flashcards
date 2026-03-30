@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { deckService } from '@/services/deckService';
+import { cardService } from '@/services/cardService';
 import { Button } from '@/components/common/Button';
 import { Spinner } from '@/components/common/Spinner';
 import { Alert } from '@/components/common/Alert';
+import { CardItem } from '@/components/card/CardItem';
 import type { DeckResponse } from '@/types/deck.types';
+import type { CardResponse } from '@/types/card.types';
 import { useAuth } from '@/context/AuthContext';
 
 export const DeckDetail: React.FC = () => {
@@ -13,7 +16,9 @@ export const DeckDetail: React.FC = () => {
     const { user } = useAuth();
 
     const [deck, setDeck] = useState<DeckResponse | null>(null);
+    const [cards, setCards] = useState<CardResponse[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isLoadingCards, setIsLoadingCards] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -28,6 +33,8 @@ export const DeckDetail: React.FC = () => {
             setError(null);
             const data = await deckService.getDeckById(deckId);
             setDeck(data);
+            // Cargar tarjetas después de tener el deck
+            await loadCards(deckId);
         } catch (err: any) {
             console.error('Error al cargar deck:', err);
             setError(
@@ -36,6 +43,33 @@ export const DeckDetail: React.FC = () => {
             );
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const loadCards = async (deckId: string) => {
+        try {
+            setIsLoadingCards(true);
+            const data = await cardService.getCards(deckId);
+            setCards(data);
+        } catch (err: any) {
+            console.error('Error al cargar tarjetas:', err);
+        } finally {
+            setIsLoadingCards(false);
+        }
+    };
+
+    const handleDeleteCard = async (cardId: string) => {
+        if (!id) return;
+        if (!window.confirm('¿Eliminar esta tarjeta? Esta acción no se puede deshacer.')) return;
+
+        try {
+            await cardService.deleteCard(id, cardId);
+            setCards(prev => prev.filter(c => c.id !== cardId));
+            // Actualizar contador del deck
+            setDeck(prev => prev ? { ...prev, cardCount: prev.cardCount - 1 } : prev);
+        } catch (err) {
+            console.error('Error al eliminar tarjeta:', err);
+            alert('Error al eliminar la tarjeta. Inténtalo de nuevo.');
         }
     };
 
@@ -189,16 +223,22 @@ export const DeckDetail: React.FC = () => {
                     <div className="px-6 py-8">
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="text-xl font-semibold text-gray-900">
-                                Tarjetas ({deck.cardCount})
+                                Tarjetas ({cards.length})
                             </h2>
-                            {isOwner && deck.cardCount > 0 && (
-                                <Button variant="primary" size="sm">
-                                    Practicar
-                                </Button>
-                            )}
+                            <div className="flex items-center gap-2">
+                                {isOwner && cards.length > 0 && (
+                                    <Button variant="secondary" size="sm" onClick={() => navigate(`/decks/${id}/cards/new`)}>
+                                        Añadir tarjeta
+                                    </Button>
+                                )}
+                            </div>
                         </div>
 
-                        {deck.cardCount === 0 ? (
+                        {isLoadingCards ? (
+                            <div className="flex justify-center py-8">
+                                <Spinner size="md" />
+                            </div>
+                        ) : cards.length === 0 ? (
                             // Empty state
                             <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
                                 <svg
@@ -224,18 +264,24 @@ export const DeckDetail: React.FC = () => {
                                 </p>
                                 {isOwner && (
                                     <div className="mt-6">
-                                        <Button size="sm">
-                                            Añadir Tarjeta
+                                        <Button size="sm" onClick={() => navigate(`/decks/${id}/cards/new`)}>
+                                            Añadir tarjeta
                                         </Button>
                                     </div>
                                 )}
                             </div>
                         ) : (
-                            // Lista de tarjetas (implementar en Fase 5)
-                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                                <p className="text-sm text-blue-800">
-                                    📝 <strong>Próximamente:</strong> Las tarjetas se implementarán en la Fase 5.
-                                </p>
+                            // Lista de tarjetas
+                            <div className="space-y-3">
+                                {cards.map(card => (
+                                    <CardItem
+                                        key={card.id}
+                                        card={card}
+                                        isOwner={isOwner}
+                                        onEdit={card => navigate(`/decks/${id}/cards/${card.id}/edit`)}
+                                        onDelete={handleDeleteCard}
+                                    />
+                                ))}
                             </div>
                         )}
                     </div>
