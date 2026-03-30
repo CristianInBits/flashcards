@@ -6,6 +6,7 @@ import { Dashboard } from '@/pages/Dashboard/Dashboard';
 import { DeckList } from '@/pages/Deck/DeckList';
 import { DeckForm } from '@/pages/Deck/DeckForm';
 import { DeckDetail } from '@/pages/Deck/DeckDetail';
+import { CardForm } from '@/pages/Card/CardForm';
 import { PrivateRoute } from './PrivateRoute';
 import { PublicRoute } from './PublicRoute';
 
@@ -60,6 +61,26 @@ export const AppRoutes: React.FC = () => {
                 element={
                     <PrivateRoute>
                         <DeckForm />
+                    </PrivateRoute>
+                }
+            />
+
+            {/* Crear tarjeta */}
+            <Route
+                path="/decks/:deckId/cards/new"
+                element={
+                    <PrivateRoute>
+                        <CardForm />
+                    </PrivateRoute>
+                }
+            />
+
+            {/* Editar tarjeta */}
+            <Route
+                path="/decks/:deckId/cards/:cardId/edit"
+                element={
+                    <PrivateRoute>
+                        <CardForm />
                     </PrivateRoute>
                 }
             />

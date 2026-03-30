@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(./mvnw compile:*)"
+      "Bash(./mvnw compile:*)",
+      "Bash(/tmp/tree_structure.txt:*)",
+      "Read(//tmp/**)"
     ]
   }
 }
