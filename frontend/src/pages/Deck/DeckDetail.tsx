@@ -226,6 +226,11 @@ export const DeckDetail: React.FC = () => {
                                 Tarjetas ({cards.length})
                             </h2>
                             <div className="flex items-center gap-2">
+                                {cards.length > 0 && (
+                                    <Button size="sm" onClick={() => navigate(`/decks/${id}/study`)}>
+                                        Estudiar
+                                    </Button>
+                                )}
                                 {isOwner && cards.length > 0 && (
                                     <Button variant="secondary" size="sm" onClick={() => navigate(`/decks/${id}/cards/new`)}>
                                         Añadir tarjeta
