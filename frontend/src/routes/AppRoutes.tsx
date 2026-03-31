@@ -7,6 +7,7 @@ import { DeckList } from '@/pages/Deck/DeckList';
 import { DeckForm } from '@/pages/Deck/DeckForm';
 import { DeckDetail } from '@/pages/Deck/DeckDetail';
 import { CardForm } from '@/pages/Card/CardForm';
+import { StudyMode } from '@/pages/Study/StudyMode';
 import { PrivateRoute } from './PrivateRoute';
 import { PublicRoute } from './PublicRoute';
 
@@ -81,6 +82,16 @@ export const AppRoutes: React.FC = () => {
                 element={
                     <PrivateRoute>
                         <CardForm />
+                    </PrivateRoute>
+                }
+            />
+
+            {/* Modo estudio */}
+            <Route
+                path="/decks/:deckId/study"
+                element={
+                    <PrivateRoute>
+                        <StudyMode />
                     </PrivateRoute>
                 }
             />
