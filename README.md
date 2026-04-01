@@ -7,7 +7,7 @@ Aplicación de tarjetas de estudio (flashcards) para aprendizaje personal. Const
 ## Stack tecnológico
 
 | Capa | Tecnología |
-|------|-----------|
+| ------ | ----------- |
 | Backend | Spring Boot 4.0.2 · Java 21 · Spring Security · JWT |
 | Base de datos | PostgreSQL 15 · Flyway (migraciones) |
 | Frontend | React 19 · TypeScript · Vite · Tailwind CSS |
@@ -19,7 +19,7 @@ Aplicación de tarjetas de estudio (flashcards) para aprendizaje personal. Const
 
 ## Arquitectura
 
-```
+```bash
 flashcards/
 ├── backend/          # Spring Boot API REST
 ├── frontend/         # React SPA
@@ -27,6 +27,7 @@ flashcards/
 ```
 
 **Puertos:**
+
 - Frontend: `http://localhost:5173`
 - Backend API: `http://localhost:8080/api`
 - PostgreSQL: `localhost:5432`
@@ -56,7 +57,7 @@ docker compose up -d
 
 La primera vez descarga las imágenes, compila el proyecto y aplica las migraciones de base de datos automáticamente.
 
-Acceder a la app en: **http://localhost:5173**
+Acceder a la app en: **<http://localhost:5173>**
 
 ### Parar los servicios
 
@@ -75,7 +76,7 @@ docker compose down -v
 
 Necesitas una instancia de PostgreSQL con estas credenciales:
 
-```
+```plaintext
 Host:     localhost:5432
 Base de datos: flashcards
 Usuario:  flashcards_user
@@ -110,7 +111,7 @@ El servidor de desarrollo arranca en `http://localhost:5173`.
 #### Scripts disponibles
 
 | Comando | Descripción |
-|---------|-------------|
+| --------- | ------------- |
 | `npm run dev` | Servidor de desarrollo con hot reload |
 | `npm run build` | Build de producción en `dist/` |
 | `npm run preview` | Preview del build de producción |
@@ -123,14 +124,15 @@ El servidor de desarrollo arranca en `http://localhost:5173`.
 Base URL: `http://localhost:8080/api`
 
 Todos los endpoints (excepto auth) requieren el header:
-```
+
+```plaintext
 Authorization: Bearer <token>
 ```
 
 ### Autenticación
 
 | Método | Ruta | Descripción |
-|--------|------|-------------|
+| --------- | --------- | ----------- |
 | `POST` | `/auth/register` | Registro de usuario |
 | `POST` | `/auth/login` | Login, devuelve JWT |
 | `GET` | `/auth/me` | Datos del usuario autenticado |
@@ -138,7 +140,7 @@ Authorization: Bearer <token>
 ### Mazos (Decks)
 
 | Método | Ruta | Descripción |
-|--------|------|-------------|
+| --------- | --------- | ----------- |
 | `GET` | `/decks` | Listar mazos (paginado, con filtros) |
 | `POST` | `/decks` | Crear mazo |
 | `GET` | `/decks/:id` | Ver mazo |
@@ -150,7 +152,7 @@ Authorization: Bearer <token>
 ### Tarjetas (Cards)
 
 | Método | Ruta | Descripción |
-|--------|------|-------------|
+| --------- | --------- | ----------- |
 | `GET` | `/decks/:deckId/cards` | Listar tarjetas del mazo |
 | `POST` | `/decks/:deckId/cards` | Crear tarjeta (solo propietario) |
 | `GET` | `/decks/:deckId/cards/:cardId` | Ver tarjeta |
@@ -202,7 +204,7 @@ Las migraciones están en `backend/src/main/resources/db/migration/` y Flyway la
 ### Backend
 
 | Variable | Descripción | Valor por defecto |
-|----------|-------------|-------------------|
+| ---------- | ------------- | ------------------- |
 | `JWT_SECRET` | Clave secreta para firmar tokens JWT | `miClaveSecretaPorDefectoParaDesarrolloLocal...` |
 | `SPRING_DATASOURCE_URL` | URL de conexión a PostgreSQL | Configurado en docker-compose |
 
