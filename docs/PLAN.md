@@ -1,0 +1,263 @@
+# Flashcards — Plan y alcance
+
+> Documento vivo. Recoge las decisiones tomadas, el alcance de la v1 y la hoja de ruta.
+> Última revisión: 2026-09-23.
+
+## 1. Visión
+
+Una aplicación personal de tarjetas de pregunta-respuesta con repetición espaciada, que se
+instala en el móvil, funciona sin conexión y guarda todo en el propio dispositivo.
+
+Criterio de éxito de la v1: **poder estudiar de camino a clase, sin cobertura, sin haber
+iniciado sesión en nada.**
+
+## 2. Decisiones cerradas
+
+| Ámbito | Decisión | Motivo |
+|---|---|---|
+| Distribución | PWA instalable | Un solo código para Android e iOS, sin cuentas de desarrollador ni revisiones de tienda |
+| Datos | 100% locales (IndexedDB), uso personal | Sin backend, sin costes, sin login, offline real |
+| Repaso | Leitner de 5 cajas | El grueso del beneficio del SRS con una fracción de la complejidad |
+| Autoevaluación | 3 botones: Mal / Bien / Fácil | Matiz suficiente sin cargar la pantalla |
+| Organización | Mazos planos + etiquetas | Flexible y sin navegación anidada en pantalla pequeña |
+| Tipo de carta | Básica (anverso → reverso) | Es el núcleo; cloze e invertida quedan para después |
+| Contenido | Markdown + LaTeX + código + imágenes | Cubre asignaturas de letras, ciencias y programación |
+| Origen | Manual + importación Markdown/CSV + generación con IA | La importación es además el plan B de la IA |
+| IA | Clave de API propia, guardada en el dispositivo | Sin backend; se paga por uso |
+| Despliegue | GitHub Pages vía GitHub Actions | Gratis, HTTPS y en el mismo repositorio |
+| Idioma | Español únicamente, sin capa de traducción | App personal; i18n sería complejidad sin uso |
+| Sesión | Sin límite diario de cartas | Se repasa lo que toca; el algoritmo ya reparte la carga |
+
+## 3. Alcance
+
+### Dentro de la v1
+
+- Crear, editar, borrar y duplicar mazos y cartas.
+- Etiquetas libres con filtrado.
+- Estudio con Leitner: cola de cartas vencidas, volteo, tres botones.
+- Gestos: deslizar para calificar, animación de giro 3D.
+- Markdown, fórmulas LaTeX, bloques de código e imágenes en anverso y reverso.
+- Importación desde Markdown y CSV (pegado o fichero).
+- Exportación e importación de copia de seguridad completa (JSON).
+- Estadísticas: cartas repasadas por día, racha, aciertos, distribución por cajas.
+- Tema claro/oscuro siguiendo el sistema, con conmutador manual.
+- Instalable y funcional sin conexión.
+- Generación de cartas con IA a partir de un texto.
+
+### Fuera de la v1 (posibles v2)
+
+- Sincronización en la nube y cuentas de usuario.
+- Cartas cloze, invertidas y de opción múltiple.
+- Importación de mazos `.apkg` de Anki.
+- Notificaciones de recordatorio diario.
+- Audio y lectura en voz alta (TTS).
+- Compartir mazos entre usuarios.
+- Empaquetado nativo con Capacitor.
+
+## 4. Modelo de datos
+
+Almacenamiento: **IndexedDB** mediante [Dexie](https://dexie.org/) — menos código que la API
+cruda y con migraciones versionadas.
+
+```ts
+type Grade = 'again' | 'good' | 'easy';
+
+interface Deck {
+  id: string;            // uuid
+  name: string;
+  description?: string;
+  tags: string[];
+  createdAt: number;
+  updatedAt: number;
+}
+
+interface Card {
+  id: string;
+  deckId: string;
+  front: string;         // markdown
+  back: string;          // markdown
+  mediaIds: string[];    // imágenes referenciadas
+  box: 1 | 2 | 3 | 4 | 5;
+  dueDate: string;       // 'YYYY-MM-DD' en hora local
+  reps: number;          // repasos totales
+  lapses: number;        // veces que ha caído a la caja 1
+  lastReviewedAt?: number;
+  suspended: boolean;
+  createdAt: number;
+  updatedAt: number;
+}
+
+interface ReviewLog {    // alimenta las estadísticas; nunca se edita
+  id: string;
+  cardId: string;
+  deckId: string;
+  reviewedAt: number;
+  grade: Grade;
+  boxBefore: number;
+  boxAfter: number;
+}
+
+interface MediaItem {
+  id: string;
+  blob: Blob;
+  mime: string;
+  createdAt: number;
+}
+
+interface Settings {
+  theme: 'system' | 'light' | 'dark';
+  apiKey?: string;       // solo en este dispositivo
+  lastBackupAt?: number;
+}
+```
+
+Índices: `cards` por `deckId`, por `dueDate` y compuesto `[deckId+dueDate]` — es la consulta
+caliente, "cartas vencidas de este mazo". `reviewLogs` por `reviewedAt`.
+
+## 5. El motor Leitner, especificado
+
+Cinco cajas con intervalos fijos en días:
+
+| Caja | 1 | 2 | 3 | 4 | 5 |
+|---|---|---|---|---|---|
+| Intervalo | 1 día | 2 días | 4 días | 8 días | 16 días |
+
+Reglas:
+
+- Una carta nueva nace en la **caja 1** con `dueDate` = hoy.
+- **Mal** → vuelve a la caja 1, `dueDate` = mañana, `lapses += 1`, y se reencola al final de
+  la sesión actual para volver a verla hoy.
+- **Bien** → sube una caja (tope 5), `dueDate` = hoy + intervalo de la nueva caja.
+- **Fácil** → sube dos cajas (tope 5), `dueDate` = hoy + intervalo de la nueva caja.
+- Una carta está **vencida** si `dueDate <= hoy`, comparando fechas locales a medianoche, no
+  marcas de tiempo: si estudias a las 23:50 y luego a las 00:10, son dos días distintos.
+- Una carta en la caja 5 acertada se queda en la 5 y vuelve en 16 días. No hay estado
+  "aprendida" definitivo: todo se repasa para siempre, solo que más espaciado.
+
+Sesión de estudio: todas las cartas vencidas del mazo (o de la selección de etiquetas),
+barajadas, **sin tope de cartas**. Las falladas se reinyectan al final, así que la sesión
+termina cuando de verdad no queda nada vencido. Es el propio algoritmo el que reparte la carga:
+si un día toca mucho, es porque ese día toca mucho.
+
+Esta lógica vive en `src/domain/leitner.ts` como **funciones puras**
+(`grade(card, grade, today) → card`), cubiertas por tests. Así, migrar a FSRS en el futuro es
+sustituir un módulo, no reescribir la aplicación.
+
+## 6. Arquitectura
+
+```
+src/
+  app/           # entrada, rutas, layout, proveedores de contexto
+  domain/        # lógica pura sin React: leitner.ts, sesión, tipos, validación
+  data/          # db.ts (Dexie), repositorios, importadores, export/backup
+  features/
+    decks/       # lista y detalle de mazos
+    study/       # pantalla de estudio, carta, gestos
+    editor/      # editor de cartas con vista previa
+    stats/       # estadísticas y racha
+    settings/    # ajustes, copia de seguridad, clave de API
+    ai/          # generación de cartas
+  ui/            # componentes compartidos y tokens de tema
+  lib/           # markdown, katex, utilidades de fecha
+```
+
+La regla que importa: **`domain/` y `data/` no importan nada de React.** Son la parte que
+sobrevive si algún día se envuelve con Capacitor o se rehace la interfaz.
+
+**Convención de idioma**: los identificadores del código van en inglés (`Deck`, `Card`, `dueDate`),
+los textos que ve el usuario y los comentarios en español. Las rutas también en español (`/ajustes`),
+porque son visibles en la barra de direcciones.
+
+### Dependencias previstas
+
+| Necesidad | Elección | Nota |
+|---|---|---|
+| Base | React 19 + TypeScript + Vite | |
+| Rutas | React Router | |
+| Persistencia | Dexie | IndexedDB con migraciones |
+| PWA | `vite-plugin-pwa` (Workbox) | Manifest, service worker y actualización |
+| Markdown | `react-markdown` + `remark-gfm` | |
+| Fórmulas | `remark-math` + `rehype-katex` + KaTeX | Carga diferida |
+| Código | `rehype-highlight` con subconjunto de lenguajes | Carga diferida |
+| Tests | Vitest | Obligatorios en `domain/` |
+
+Volteo y gestos con transformaciones CSS 3D y eventos de puntero propios, sin librería de
+animación, para no pagar bundle. Si se queda corto, `motion` es la alternativa.
+
+## 7. Pantallas
+
+1. **Mis mazos** — lista con contador de cartas vencidas por mazo, filtro por etiquetas, botón
+   de estudiar todo y de crear mazo.
+2. **Mazo** — cartas del mazo, buscador y acciones: estudiar, añadir, importar, generar con IA.
+3. **Estudio** — la pantalla que más se usa: anverso, gesto o toque para voltear, reverso y tres
+   botones. Barra de progreso de la sesión y contador de restantes.
+4. **Editor de carta** — anverso y reverso en Markdown con vista previa en vivo y adjuntar imagen.
+5. **Importar** — pegar texto o subir fichero, elegir formato, previsualizar las cartas
+   detectadas y confirmar.
+6. **Generar con IA** — pegar un tema o unos apuntes, número de cartas, previsualizar y confirmar.
+7. **Estadísticas** — racha, cartas por día, aciertos y distribución por cajas.
+8. **Ajustes** — tema, clave de API, copia de seguridad, borrar todo.
+
+## 8. Formatos de importación
+
+Tres formatos soportados, detectados automáticamente y forzables a mano:
+
+1. **Una línea por carta** — `pregunta :: respuesta`. Es el formato de los plugins de repetición
+   espaciada de Obsidian, cómodo para apuntes que ya existen.
+2. **Por encabezados** — cada `##` es la pregunta y el contenido hasta el siguiente encabezado es
+   la respuesta. Bueno para respuestas largas con formato.
+3. **CSV/TSV** — columnas `anverso,reverso,etiquetas`, con cabecera opcional.
+
+La previsualización antes de confirmar es parte del alcance: importar a ciegas 200 cartas mal
+cortadas es el error más caro de deshacer.
+
+## 9. Generación con IA
+
+- Modelo: `claude-opus-5`.
+- Salida estructurada (`output_config.format`) con un esquema `{ cards: [{ front, back, tags }] }`,
+  para no tener que analizar texto libre.
+- La clave se guarda en los ajustes, **solo en este dispositivo**, y no se envía a ningún sitio que
+  no sea la API de Anthropic.
+- Llamada desde el navegador con el SDK oficial `@anthropic-ai/sdk` y `dangerouslyAllowBrowser: true`.
+  **A verificar en la fase 5**: llamar a la API directamente desde el navegador exige que la petición
+  vaya marcada como acceso directo desde navegador. Si el CORS lo impide, hay dos planes B ya
+  previstos — generar el contenido fuera y traerlo por el importador (coste cero) o un Worker de
+  Cloudflare de veinte líneas como proxy.
+- Coste orientativo: entrada 5 $/millón de tokens, salida 25 $/millón. Generar un mazo de unas 30
+  cartas a partir de un tema son céntimos.
+
+## 10. Hoja de ruta
+
+| Fase | Contenido | Entregable |
+|---|---|---|
+| 0 ✅ | Andamiaje: Vite + React + TS, estructura de carpetas, PWA mínima, Action de despliegue | App instalable en el móvil desde GitHub Pages |
+| 1 | Modelo de datos, Dexie, CRUD de mazos y cartas, editor con Markdown/LaTeX/código | Se pueden crear y organizar cartas |
+| 2 | Motor Leitner con tests, pantalla de estudio, volteo y gestos | **La app ya sirve para estudiar** |
+| 3 | Importadores Markdown/CSV, imágenes, copia de seguridad JSON | Se pueden volcar los apuntes que ya tienes |
+| 4 | Estadísticas, racha, tema claro/oscuro, ajustes | Versión 1.0 |
+| 5 | Generación con IA | |
+
+La fase 2 es la frontera real: a partir de ahí la aplicación es usable a diario y todo lo demás es
+mejora incremental.
+
+## 11. Riesgos conocidos
+
+- **iOS.** Instalar una PWA solo se puede desde Safari (Compartir → Añadir a pantalla de inicio).
+  Además, iOS puede purgar el almacenamiento de webs que no se abren en semanas. Mitigación: pedir
+  `navigator.storage.persist()` al instalar y recordar la copia de seguridad si hace mucho de la última.
+- **Sin sincronización, el dispositivo es el único sitio donde están los datos.** La copia de
+  seguridad manual de la fase 3 no es un extra, es la red de seguridad.
+- **Tamaño del bundle.** KaTeX y el resaltado de código pesan. Se cargan con `import()` dinámico solo
+  cuando una carta los necesita.
+- **Ruta base.** GitHub Pages sirve el proyecto en `/flashcards/`; hay que configurar `base` en Vite y
+  `start_url`/`scope` en el manifest o el service worker no se registrará bien.
+- **Imágenes y copia de seguridad.** Con imágenes, el JSON deja de ser ligero. Opción prevista:
+  exportar en `.zip` o avisar del tamaño antes de generar el fichero.
+
+## 12. Decisiones pendientes
+
+- Nombre definitivo de la aplicación. El icono se genera con el prompt de [ICONO.md](ICONO.md).
+
+Los textos de la interfaz se escriben directamente en español en el código, sin fichero de
+traducciones ni librería de i18n. Si algún día hiciera falta otro idioma, extraerlos es un
+trabajo mecánico; montar la infraestructura ahora sería complejidad sin uso.
