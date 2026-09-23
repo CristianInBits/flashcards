@@ -178,7 +178,7 @@ porque son visibles en la barra de direcciones.
 | PWA | `vite-plugin-pwa` (Workbox) | Manifest, service worker y actualización |
 | Markdown | `react-markdown` + `remark-gfm` | |
 | Fórmulas | `remark-math` + `rehype-katex` + KaTeX | Carga diferida |
-| Código | `rehype-highlight` con subconjunto de lenguajes | Carga diferida |
+| Código | `lowlight` con nueve lenguajes, en un plugin propio | Carga diferida. `rehype-highlight` se descartó: importa estáticamente las ~38 gramáticas «common» de highlight.js y su opción `languages` no lo evita |
 | Tests | Vitest | Obligatorios en `domain/` |
 
 Volteo y gestos con transformaciones CSS 3D y eventos de puntero propios, sin librería de
@@ -231,7 +231,7 @@ cortadas es el error más caro de deshacer.
 | Fase | Contenido | Entregable |
 |---|---|---|
 | 0 ✅ | Andamiaje: Vite + React + TS, estructura de carpetas, PWA mínima, Action de despliegue | App instalable en el móvil desde GitHub Pages |
-| 1 | Modelo de datos, Dexie, CRUD de mazos y cartas, editor con Markdown/LaTeX/código | Se pueden crear y organizar cartas |
+| 1 ✅ | Modelo de datos, Dexie, CRUD de mazos y cartas, editor con Markdown/LaTeX/código | Se pueden crear y organizar cartas |
 | 2 | Motor Leitner con tests, pantalla de estudio, volteo y gestos | **La app ya sirve para estudiar** |
 | 3 | Importadores Markdown/CSV, imágenes, copia de seguridad JSON | Se pueden volcar los apuntes que ya tienes |
 | 4 | Estadísticas, racha, tema claro/oscuro, ajustes | Versión 1.0 |
