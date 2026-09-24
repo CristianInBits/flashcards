@@ -37,6 +37,7 @@ src/
   features/   una carpeta por pantalla
   ui/         componentes compartidos y tokens de tema
   lib/        utilidades (fechas, markdown)
+ejemplos/     mazos de muestra listos para importar
 ```
 
 `domain/` y `data/` no importan React: son la parte que sobrevive a un cambio de interfaz.
