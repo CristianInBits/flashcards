@@ -1728,3 +1728,20 @@ body {
 .decks__new .button:last-child {
   flex: 1;
 }
+
+.form__aside {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.form__aside a {
+  /* El relleno vertical en un elemento en línea agranda el área táctil sin
+     empujar el texto de alrededor: 18px de alto es difícil de acertar con
+     el dedo. */
+  padding-block: 9px;
+  color: var(--violet-ink);
+  font-weight: 700;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}

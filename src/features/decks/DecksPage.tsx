@@ -286,6 +286,17 @@ function NewDeckForm({ onClose }: { onClose: () => void }) {
           Cancelar
         </button>
       </div>
+
+      {/* El importador crea el mazo él mismo, así que desde aquí se puede saltar
+          directo sin llegar a pulsar «Crear». El nombre escrito se lleva consigo
+          para no tener que teclearlo otra vez. */}
+      <p className="form__aside">
+        ¿Ya tienes apuntes?{' '}
+        <Link to="/importar" state={{ name }}>
+          Impórtalos
+        </Link>{' '}
+        y el mazo se crea solo.
+      </p>
     </form>
   )
 }

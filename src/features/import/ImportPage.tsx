@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { Link, useNavigate, useParams } from 'react-router'
+import { Link, useLocation, useNavigate, useParams } from 'react-router'
 
 import { createDeck, getDeck, listDecks } from '../../data/decks'
 import { importCards } from '../../data/importCards'
@@ -28,12 +28,14 @@ const FORMATS: { value: ImportFormat | 'auto'; label: string }[] = [
 export function ImportPage() {
   const { deckId } = useParams()
   const navigate = useNavigate()
+  // El formulario de «Nuevo mazo» puede mandar aquí con el nombre ya escrito.
+  const propuesto = (useLocation().state as { name?: string } | null)?.name ?? ''
   const fileRef = useRef<HTMLInputElement>(null)
 
   const [text, setText] = useState('')
   const [chosen, setChosen] = useState<ImportFormat | 'auto'>('auto')
   const [target, setTarget] = useState<string>(NUEVO)
-  const [newName, setNewName] = useState('')
+  const [newName, setNewName] = useState(propuesto)
   const [saving, setSaving] = useState(false)
 
   const deck = useLiveQuery(
