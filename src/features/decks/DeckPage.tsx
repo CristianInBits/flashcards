@@ -68,11 +68,18 @@ export function DeckPage() {
       {deck.description && <p className="page__subtitle">{deck.description}</p>}
       {deck.tags.length > 0 && <p className="card-item__tags">{deck.tags.join(' · ')}</p>}
 
-      {dueCount > 0 && (
-        <Link className="button button--wide" to={`/mazo/${deck.id}/estudiar`}>
-          Estudiar {dueCount} {dueCount === 1 ? 'carta' : 'cartas'}
-        </Link>
-      )}
+      <div className="actions">
+        {dueCount > 0 && (
+          <Link className="button" to={`/mazo/${deck.id}/estudiar`}>
+            Estudiar {dueCount} {dueCount === 1 ? 'carta' : 'cartas'}
+          </Link>
+        )}
+        {cards.length > 0 && (
+          <Link className="button button--ghost" to={`/mazo/${deck.id}/practicar`}>
+            Práctica libre
+          </Link>
+        )}
+      </div>
 
       <div className="form__actions">
         <Link className="button button--ghost" to={`/mazo/${deck.id}/importar`}>

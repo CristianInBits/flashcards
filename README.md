@@ -5,8 +5,8 @@ funciona sin conexión y guarda todo en el propio dispositivo: sin cuentas, sin 
 que los datos salgan de ahí.
 
 **Versión 1.0 funcional.** Crear mazos y cartas con Markdown, fórmulas LaTeX, código e imágenes;
-estudiarlas con repetición espaciada; importar apuntes desde Markdown o CSV; ver el progreso y la
-racha; y guardar y restaurar una copia de seguridad. Queda la generación con IA (fase 5).
+estudiarlas con repetición espaciada o en práctica libre; importar apuntes desde Markdown o CSV;
+ver el progreso y la racha; y guardar y restaurar una copia de seguridad. Queda la generación con IA (fase 5).
 
 - [Plan y alcance](docs/PLAN.md) — decisiones, modelo de datos, algoritmo y hoja de ruta.
 - [Icono](docs/ICONO.md) — prompt de generación y requisitos de los distintos tamaños.

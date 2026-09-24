@@ -78,49 +78,49 @@
 }
 
 /*
- * Oscuro. No es el claro invertido: los pasteles se suben de saturación para
- * que no se apaguen sobre el fondo, y el fondo es el azul marino del icono,
- * para que la pantalla de arranque no dé un salto de color al instalarla.
+ * Oscuro. No es el claro invertido ni un azul marino: el fondo es un gris
+ * azulado muy desaturado y los acentos bajan de saturación con él, para que
+ * el color siga siendo la excepción y no el ambiente, igual que en el claro.
  */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
     color-scheme: dark;
 
-    --bg: #061c53;
-    --bg-soft: #04163f;
-    --surface: #0d2a6b;
-    --surface-soft: #123176;
-    --card: #0f2c70;
-    --border: #1e4193;
-    --border-soft: #1a3a85;
-    --divider: #1a3a85;
+    --bg: #161a24;
+    --bg-soft: #11141d;
+    --surface: #1e2230;
+    --surface-soft: #242938;
+    --card: #232838;
+    --border: #333a4d;
+    --border-soft: #2b3142;
+    --divider: #2b3142;
 
-    --text: #eaf0ff;
-    --text-secondary: #b7c6ea;
-    --text-muted: #93a4ce;
+    --text: #e9ebf3;
+    --text-secondary: #b3b9cb;
+    --text-muted: #8d94a8;
 
-    --violet: #b9a5ff;
-    --violet-ink: #d5caff;
-    --violet-soft: #2a2f7a;
-    --violet-faint: #22276a;
-    --violet-line: #3b3f96;
+    --violet: #a39ade;
+    --violet-ink: #c9c2f5;
+    --violet-soft: #2c2b45;
+    --violet-faint: #24243a;
+    --violet-line: #3b3a58;
 
-    --pink: #f0a9c9;
-    --pink-soft: #4a2452;
-    --mint-soft: #14453c;
-    --mint-ink: #86d3b5;
-    --blue-soft: #16336e;
-    --yellow-soft: #4a3f1c;
+    --pink: #d7a2bb;
+    --pink-soft: #3a2c37;
+    --mint-soft: #22352f;
+    --mint-ink: #8fc2ac;
+    --blue-soft: #232b3d;
+    --yellow-soft: #3a3527;
 
-    --danger: #ff9db5;
-    --danger-soft: #4a1f3a;
-    --danger-line: #6b2f4e;
-    --success: #7fd9b4;
-    --success-soft: #10402f;
-    --success-line: #1d5c46;
-    --neutral: #b6a9ff;
-    --neutral-soft: #2a2a66;
-    --neutral-line: #3b3a85;
+    --danger: #d79aa9;
+    --danger-soft: #3a2730;
+    --danger-line: #4d323d;
+    --success: #8fc2ac;
+    --success-soft: #22352f;
+    --success-line: #334a41;
+    --neutral: #a79ce0;
+    --neutral-soft: #2b2a40;
+    --neutral-line: #3b3a54;
 
     --shadow-card: 0 10px 24px rgb(0 0 0 / 0.28);
     --shadow-soft: 0 5px 12px rgb(0 0 0 / 0.2);
@@ -131,41 +131,41 @@
 :root[data-theme='dark'] {
   color-scheme: dark;
 
-  --bg: #061c53;
-  --bg-soft: #04163f;
-  --surface: #0d2a6b;
-  --surface-soft: #123176;
-  --card: #0f2c70;
-  --border: #1e4193;
-  --border-soft: #1a3a85;
-  --divider: #1a3a85;
+  --bg: #161a24;
+  --bg-soft: #11141d;
+  --surface: #1e2230;
+  --surface-soft: #242938;
+  --card: #232838;
+  --border: #333a4d;
+  --border-soft: #2b3142;
+  --divider: #2b3142;
 
-  --text: #eaf0ff;
-  --text-secondary: #b7c6ea;
-  --text-muted: #93a4ce;
+  --text: #e9ebf3;
+  --text-secondary: #b3b9cb;
+  --text-muted: #8d94a8;
 
-  --violet: #b9a5ff;
-  --violet-ink: #d5caff;
-  --violet-soft: #2a2f7a;
-  --violet-faint: #22276a;
-  --violet-line: #3b3f96;
+  --violet: #a39ade;
+  --violet-ink: #c9c2f5;
+  --violet-soft: #2c2b45;
+  --violet-faint: #24243a;
+  --violet-line: #3b3a58;
 
-  --pink: #f0a9c9;
-  --pink-soft: #4a2452;
-  --mint-soft: #14453c;
-  --mint-ink: #86d3b5;
-  --blue-soft: #16336e;
-  --yellow-soft: #4a3f1c;
+  --pink: #d7a2bb;
+  --pink-soft: #3a2c37;
+  --mint-soft: #22352f;
+  --mint-ink: #8fc2ac;
+  --blue-soft: #232b3d;
+  --yellow-soft: #3a3527;
 
-  --danger: #ff9db5;
-  --danger-soft: #4a1f3a;
-  --danger-line: #6b2f4e;
-  --success: #7fd9b4;
-  --success-soft: #10402f;
-  --success-line: #1d5c46;
-  --neutral: #b6a9ff;
-  --neutral-soft: #2a2a66;
-  --neutral-line: #3b3a85;
+  --danger: #d79aa9;
+  --danger-soft: #3a2730;
+  --danger-line: #4d323d;
+  --success: #8fc2ac;
+  --success-soft: #22352f;
+  --success-line: #334a41;
+  --neutral: #a79ce0;
+  --neutral-soft: #2b2a40;
+  --neutral-line: #3b3a54;
 
   --shadow-card: 0 10px 24px rgb(0 0 0 / 0.28);
   --shadow-soft: 0 5px 12px rgb(0 0 0 / 0.2);
@@ -1279,4 +1279,63 @@ body {
   .progress__bar {
     transition: none !important;
   }
+}
+
+/* ---------- Práctica libre ---------- */
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: var(--gap);
+}
+
+.actions .button {
+  flex: 1;
+  min-width: 140px;
+}
+
+.form__actions--center {
+  justify-content: center;
+  margin-bottom: 0;
+}
+
+.study__badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge {
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.badge--practice {
+  background: var(--mint-soft);
+  color: var(--mint-ink);
+}
+
+/* Botón de práctica en la lista de mazos */
+.play {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  background: var(--mint-soft);
+  border-radius: var(--radius-pill);
+  color: var(--mint-ink);
+  text-decoration: none;
+}
+
+.play svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
 }

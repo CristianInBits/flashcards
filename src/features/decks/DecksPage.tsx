@@ -88,8 +88,8 @@ export function DecksPage() {
         <ul className="list">
           {visible.map(({ deck, total, due }) => (
             <li key={deck.id}>
-              <Link className="card-item" to={`/mazo/${deck.id}`}>
-                <div className="card-item__body">
+              <div className="card-item">
+                <Link className="card-item__body" to={`/mazo/${deck.id}`}>
                   <span className="card-item__title">{deck.name}</span>
                   {deck.description && (
                     <span className="card-item__subtitle">{deck.description}</span>
@@ -97,12 +97,26 @@ export function DecksPage() {
                   {deck.tags.length > 0 && (
                     <span className="card-item__tags">{deck.tags.join(' · ')}</span>
                   )}
-                </div>
-                <div className="counts">
+                </Link>
+                <Link className="counts" to={`/mazo/${deck.id}`}>
                   <span className={due > 0 ? 'count count--due' : 'count'}>{due}</span>
                   <span className="count__label">de {total}</span>
-                </div>
-              </Link>
+                </Link>
+                {/* Práctica libre a un toque, que es justo lo que se quiere
+                    cuando el mazo marca 0 vencidas y aun así quieres repasar. */}
+                {total > 0 && (
+                  <Link
+                    className="play"
+                    to={`/mazo/${deck.id}/practicar`}
+                    aria-label={`Práctica libre de ${deck.name}`}
+                    title="Práctica libre"
+                  >
+                    <svg viewBox="0 0 24 24" aria-hidden focusable="false">
+                      <path d="M8 5.5 18.5 12 8 18.5z" />
+                    </svg>
+                  </Link>
+                )}
+              </div>
             </li>
           ))}
         </ul>

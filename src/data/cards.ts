@@ -79,6 +79,15 @@ export function countCards(deckId: string): Promise<number> {
 }
 
 /**
+ * Todas las cartas del mazo para la práctica libre, vencidas o no.
+ * Las suspendidas se quedan fuera: si las has apartado, no las quieres ver.
+ */
+export async function listPracticeCards(deckId: string): Promise<Card[]> {
+  const cards = await db.cards.where('deckId').equals(deckId).toArray()
+  return cards.filter((card) => !card.suspended)
+}
+
+/**
  * Cartas vencidas de un mazo: las que tocan hoy y las atrasadas.
  * Usa el índice compuesto [deckId+dueDate], así que no recorre el mazo entero.
  */

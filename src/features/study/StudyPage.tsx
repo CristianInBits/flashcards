@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router'
 
-import { listAllDueCards, listDueCards, nextDueDate } from '../../data/cards'
+import {
+  listAllDueCards,
+  listDueCards,
+  listPracticeCards,
+  nextDueDate,
+} from '../../data/cards'
 import { getDeck } from '../../data/decks'
 import { saveReview } from '../../data/reviews'
 import { gradeCard } from '../../domain/leitner'
@@ -11,16 +16,30 @@ import { daysUntil, fromIsoDate, type IsoDate } from '../../lib/date'
 import { Flashcard } from './Flashcard'
 import { useSwipe } from './useSwipe'
 
-export function StudyPage() {
+/**
+ * `study` es el repaso de verdad: solo cartas vencidas, y cada respuesta mueve
+ * la carta de caja y queda registrada.
+ *
+ * `practice` es repasar por repasar: entra el mazo entero y **no se escribe
+ * nada**. Ni cajas, ni fechas, ni registro, así que no toca la programación ni
+ * aparece en las estadísticas. Sirve para machacar antes de un examen sin
+ * estropear el ritmo de la repetición espaciada.
+ */
+export type StudyMode = 'study' | 'practice'
+
+export function StudyPage({ mode = 'study' }: { mode?: StudyMode }) {
   // Sin deckId, la sesión es de todos los mazos a la vez.
   const { deckId } = useParams()
   const backTo = deckId ? `/mazo/${deckId}` : '/'
+  const practice = mode === 'practice'
 
   const [session, setSession] = useState<Session | null>(null)
   const [flipped, setFlipped] = useState(false)
   const [deckName, setDeckName] = useState<string>()
   /** undefined mientras no se ha consultado; null si no hay ninguna carta. */
   const [nextDue, setNextDue] = useState<IsoDate | null | undefined>(undefined)
+  /** Cambiarlo rehace la sesión: es el «otra vuelta» de la práctica libre. */
+  const [round, setRound] = useState(0)
   const saving = useRef(false)
 
   useEffect(() => {
@@ -29,27 +48,33 @@ export function StudyPage() {
     // A propósito una lectura única y no useLiveQuery: la sesión es una foto
     // del momento de empezar. Si fuese reactiva, guardar cada repaso la
     // reharía desde cero y la cola se barajaría entre carta y carta.
-    void Promise.all([
-      deckId ? listDueCards(deckId) : listAllDueCards(),
-      deckId ? getDeck(deckId) : Promise.resolve(undefined),
-    ]).then(([cards, deck]) => {
-      if (cancelled) return
-      setDeckName(deck?.name)
-      setSession(startSession(cards))
-    })
+    const cards = practice
+      ? listPracticeCards(deckId ?? '')
+      : deckId
+        ? listDueCards(deckId)
+        : listAllDueCards()
+
+    void Promise.all([cards, deckId ? getDeck(deckId) : Promise.resolve(undefined)]).then(
+      ([cards, deck]) => {
+        if (cancelled) return
+        setDeckName(deck?.name)
+        setSession(startSession(cards))
+      },
+    )
 
     return () => {
       cancelled = true
     }
-  }, [deckId])
+  }, [deckId, practice, round])
 
   const finished = session !== null && isFinished(session)
 
   // La próxima fecha se consulta al terminar, no al empezar: al empezar todas
   // las cartas de la sesión vencen hoy, así que preguntarlo entonces siempre
-  // respondería «hoy» y el resumen mentiría.
+  // respondería «hoy» y el resumen mentiría. En práctica libre no se enseña,
+  // porque la práctica no ha movido ninguna fecha.
   useEffect(() => {
-    if (!finished) return
+    if (!finished || practice) return
     let cancelled = false
     void nextDueDate(deckId).then((due) => {
       if (!cancelled) setNextDue(due ?? null)
@@ -57,7 +82,7 @@ export function StudyPage() {
     return () => {
       cancelled = true
     }
-  }, [finished, deckId])
+  }, [finished, practice, deckId])
 
   const handleGrade = useCallback(
     async (grade: Grade) => {
@@ -65,6 +90,14 @@ export function StudyPage() {
       if (saving.current) return
       const card = session && currentCard(session)
       if (!card) return
+
+      // En práctica libre no se escribe nada: la carta avanza en la cola de
+      // esta sesión y se acabó.
+      if (practice) {
+        setSession((current) => (current ? answer(current, card, grade) : current))
+        setFlipped(false)
+        return
+      }
 
       saving.current = true
       try {
@@ -76,7 +109,7 @@ export function StudyPage() {
         saving.current = false
       }
     },
-    [session],
+    [session, practice],
   )
 
   const { offset, dragging, wasDragged, handlers } = useSwipe({
@@ -97,12 +130,13 @@ export function StudyPage() {
       if (!flipped) return
       if (event.key === '1') void handleGrade('again')
       if (event.key === '2') void handleGrade('good')
-      if (event.key === '3') void handleGrade('easy')
+      // En práctica libre no hay «Fácil»: no habría nada que acelerar.
+      if (event.key === '3' && !practice) void handleGrade('easy')
     }
 
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [flipped, handleGrade])
+  }, [flipped, practice, handleGrade])
 
   if (!session) {
     return (
@@ -121,9 +155,16 @@ export function StudyPage() {
           ← {deckName ? 'Volver al mazo' : 'Mis mazos'}
         </Link>
         {session.total === 0 ? (
-          <NothingDue title={title} nextDue={nextDue} deckId={deckId} />
+          <NothingDue title={title} nextDue={nextDue} deckId={deckId} practice={practice} />
         ) : (
-          <Summary session={session} nextDue={nextDue} backTo={backTo} deckName={deckName} />
+          <Summary
+            session={session}
+            nextDue={nextDue}
+            backTo={backTo}
+            deckName={deckName}
+            practice={practice}
+            onRestart={() => setRound((value) => value + 1)}
+          />
         )}
       </section>
     )
@@ -138,8 +179,11 @@ export function StudyPage() {
         <Link className="back" to={backTo}>
           ← Salir
         </Link>
-        <span className="study__counter">
-          {session.completed} de {session.total}
+        <span className="study__badges">
+          {practice && <span className="badge badge--practice">Práctica libre</span>}
+          <span className="study__counter">
+            {session.completed} de {session.total}
+          </span>
         </span>
       </div>
 
@@ -167,7 +211,29 @@ export function StudyPage() {
         handlers={handlers}
       />
 
-      {flipped ? (
+      {flipped && practice ? (
+        /* En práctica solo hay dos respuestas de verdad: si fallas, la carta
+           vuelve al final de la cola; si aciertas, se retira. «Bien» y «Fácil»
+           harían exactamente lo mismo, y dos botones idénticos engañan. */
+        <div className="grades">
+          <button
+            type="button"
+            className="grade grade--again"
+            onClick={() => void handleGrade('again')}
+          >
+            Fallada
+            <small>vuelve a salir</small>
+          </button>
+          <button
+            type="button"
+            className="grade grade--easy"
+            onClick={() => void handleGrade('good')}
+          >
+            Acertada
+            <small>fuera de la cola</small>
+          </button>
+        </div>
+      ) : flipped ? (
         <div className="grades">
           <button type="button" className="grade grade--again" onClick={() => void handleGrade('again')}>
             Mal
@@ -191,7 +257,9 @@ export function StudyPage() {
       )}
 
       <p className="study__help">
-        Caja {card.box} · desliza a la izquierda para Mal, a la derecha para Bien
+        {practice
+          ? 'No cuenta para las estadísticas ni cambia cuándo toca repasar'
+          : `Caja ${card.box} · desliza a la izquierda para Mal, a la derecha para Bien`}
       </p>
     </section>
   )
@@ -201,11 +269,29 @@ function NothingDue({
   title,
   nextDue,
   deckId,
+  practice,
 }: {
   title: string
   nextDue: IsoDate | null | undefined
   deckId?: string
+  practice: boolean
 }) {
+  // Sin cartas no hay ni repaso ni práctica posible.
+  if (practice) {
+    return (
+      <div className="empty">
+        <p className="empty__text">{title} no tiene cartas.</p>
+        {deckId && (
+          <p>
+            <Link className="button" to={`/mazo/${deckId}/carta/nueva`}>
+              Añadir la primera
+            </Link>
+          </p>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div className="empty">
       <p className="empty__text">Nada que repasar en {title}.</p>
@@ -221,7 +307,20 @@ function NothingDue({
           )}
         </>
       ) : (
-        nextDue !== undefined && <p className="empty__hint">{describeNextDue(nextDue)}</p>
+        nextDue !== undefined && (
+          <>
+            <p className="empty__hint">{describeNextDue(nextDue)}</p>
+            {/* El momento exacto en que apetece la práctica libre: no toca
+                nada, pero quieres seguir repasando. */}
+            {deckId && (
+              <p>
+                <Link className="button button--ghost" to={`/mazo/${deckId}/practicar`}>
+                  Practicar igualmente
+                </Link>
+              </p>
+            )}
+          </>
+        )
       )}
     </div>
   )
@@ -232,18 +331,22 @@ function Summary({
   nextDue,
   backTo,
   deckName,
+  practice,
+  onRestart,
 }: {
   session: Session
   nextDue: IsoDate | null | undefined
   backTo: string
   deckName?: string
+  practice: boolean
+  onRestart: () => void
 }) {
   return (
     <div className="empty">
-      <p className="empty__text">Sesión terminada.</p>
+      <p className="empty__text">{practice ? 'Práctica terminada.' : 'Sesión terminada.'}</p>
       <dl className="rows rows--summary">
         <div className="row">
-          <dt className="row__label">Cartas repasadas</dt>
+          <dt className="row__label">Cartas {practice ? 'practicadas' : 'repasadas'}</dt>
           <dd className="row__value">{session.total}</dd>
         </div>
         <div className="row">
@@ -255,12 +358,25 @@ function Summary({
           <dd className="row__value">{session.failed}</dd>
         </div>
       </dl>
-      {nextDue && <p className="empty__hint">{describeNextDue(nextDue)}</p>}
-      <p>
+
+      {practice ? (
+        <p className="empty__hint">
+          No se ha guardado nada: ni el progreso de repaso ni las estadísticas han cambiado.
+        </p>
+      ) : (
+        nextDue && <p className="empty__hint">{describeNextDue(nextDue)}</p>
+      )}
+
+      <div className="form__actions form__actions--center">
+        {practice && (
+          <button type="button" className="button button--ghost" onClick={onRestart}>
+            Otra vuelta
+          </button>
+        )}
         <Link className="button" to={backTo}>
           {deckName ? 'Volver al mazo' : 'Volver a mis mazos'}
         </Link>
-      </p>
+      </div>
     </div>
   )
 }

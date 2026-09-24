@@ -35,6 +35,7 @@ iniciado sesión en nada.**
 - Crear, editar, borrar y duplicar mazos y cartas.
 - Etiquetas libres con filtrado.
 - Estudio con Leitner: cola de cartas vencidas, volteo, tres botones.
+- Práctica libre: el mazo entero, sin tocar la programación ni las estadísticas.
 - Gestos: deslizar para calificar, animación de giro 3D.
 - Markdown, fórmulas LaTeX, bloques de código e imágenes en anverso y reverso.
 - Importación desde Markdown y CSV (pegado o fichero).
@@ -148,6 +149,19 @@ Esta lógica vive en `src/domain/leitner.ts` como **funciones puras**
 (`startSession`, `answer`), inmutable: cada respuesta devuelve una sesión nueva. Ambos están
 cubiertos por tests, así que migrar a FSRS en el futuro es sustituir un módulo, no reescribir
 la aplicación.
+
+### Práctica libre
+
+Además del repaso programado hay un modo de **práctica libre**: entra el mazo entero, vencido o
+no, y **no se escribe absolutamente nada** — ni cajas, ni fechas, ni registro de repaso. Sirve
+para machacar antes de un examen sin descolocar la programación ni ensuciar las estadísticas.
+
+Reutiliza la misma cola de `session.ts` y se salta `gradeCard` y `saveReview`, que son los dos
+únicos sitios donde se escribe. No hay una segunda implementación del repaso que mantener.
+
+Solo tiene dos respuestas, Fallada y Acertada, porque son las dos únicas que hacen algo distinto:
+la fallada vuelve al final de la cola y la acertada se retira. Mantener los tres botones del
+repaso sería enseñar dos que hacen exactamente lo mismo.
 
 ## 6. Arquitectura
 

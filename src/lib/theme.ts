@@ -10,9 +10,9 @@ export type Theme = 'system' | 'light' | 'dark'
 const KEY = 'carti:theme'
 const THEMES: Theme[] = ['system', 'light', 'dark']
 
-/** Los mismos colores que el tema de la hoja de estilos y que el fondo del icono. */
-const LIGHT_COLOR = '#faf7ff'
-const DARK_COLOR = '#061c53'
+/** Los mismos que --bg en la hoja de estilos, para cada tema. */
+const LIGHT_COLOR = '#f7f7fc'
+const DARK_COLOR = '#161a24'
 
 export function readTheme(): Theme {
   try {
