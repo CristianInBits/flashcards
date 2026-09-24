@@ -100,6 +100,21 @@ describe('validateBackup', () => {
     expect(result.cards[0].mediaIds).toEqual([])
   })
 
+  it('conserva el icono del mazo', () => {
+    const result = validateBackup(backup({ decks: [{ ...deck, emoji: '🧪' }] }))
+    expect(result.decks[0].emoji).toBe('🧪')
+  })
+
+  it('un mazo sin icono se restaura sin icono', () => {
+    expect(validateBackup(backup()).decks[0].emoji).toBe('')
+  })
+
+  it('recorta un icono que trae media frase detrás', () => {
+    // Una copia editada a mano no va a meter un párrafo dentro de la ficha.
+    const result = validateBackup(backup({ decks: [{ ...deck, emoji: '🧪 orgánica' }] }))
+    expect(result.decks[0].emoji).toBe('🧪')
+  })
+
   it('mete en rango una caja imposible', () => {
     const result = validateBackup(backup({ cards: [{ ...card, box: 47 }] }))
     expect(result.cards[0].box).toBe(5)

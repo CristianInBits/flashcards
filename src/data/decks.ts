@@ -1,10 +1,13 @@
 import { summarizeDecks, type DeckSummary } from '../domain/decks'
 import type { Deck } from '../domain/types'
+import { normalizeEmoji } from '../lib/emoji'
 import { db, newId } from './db'
 import { pruneOrphanMedia } from './media'
 
 export interface DeckInput {
   name: string
+  /** Cadena vacía para quitarlo: en la ficha vuelven las iniciales. */
+  emoji?: string
   description?: string
   tags?: string[]
 }
@@ -14,6 +17,7 @@ export async function createDeck(input: DeckInput): Promise<Deck> {
   const deck: Deck = {
     id: newId(),
     name: input.name.trim(),
+    emoji: normalizeEmoji(input.emoji ?? ''),
     description: input.description?.trim() ?? '',
     tags: normalizeTags(input.tags ?? []),
     createdAt: now,
@@ -26,6 +30,7 @@ export async function createDeck(input: DeckInput): Promise<Deck> {
 export async function updateDeck(id: string, patch: Partial<DeckInput>): Promise<void> {
   const changes: Partial<Deck> = { updatedAt: Date.now() }
   if (patch.name !== undefined) changes.name = patch.name.trim()
+  if (patch.emoji !== undefined) changes.emoji = normalizeEmoji(patch.emoji)
   if (patch.description !== undefined) changes.description = patch.description.trim()
   if (patch.tags !== undefined) changes.tags = normalizeTags(patch.tags)
   await db.decks.update(id, changes)

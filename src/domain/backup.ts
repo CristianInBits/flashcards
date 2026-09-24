@@ -1,3 +1,4 @@
+import { normalizeEmoji } from '../lib/emoji'
 import type { Card, Deck, ReviewLog } from './types'
 
 /**
@@ -123,6 +124,7 @@ function readDeck(raw: unknown): Deck {
   return {
     id: field(raw, 'id', isString),
     name: field(raw, 'name', isString),
+    emoji: isString(raw.emoji) ? normalizeEmoji(raw.emoji) : '',
     description: isString(raw.description) ? raw.description : '',
     tags: isStringArray(raw.tags) ? raw.tags : [],
     createdAt: isNumber(raw.createdAt) ? raw.createdAt : Date.now(),

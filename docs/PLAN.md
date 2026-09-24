@@ -253,13 +253,23 @@ animación, para no pagar bundle. Si se queda corto, `motion` es la alternativa.
 
 ## 7. Pantallas
 
-1. **Tus mazos** — cada mazo es una ficha con su propio color: tile con las iniciales, nombre,
-   número de cartas, etiquetas, cuántas vencen hoy y una barra de progreso. Buscador (a partir de
-   cuatro mazos), filtros, botón de estudiar todo y botón de crear mazo pegado sobre la barra
-   inferior.
+1. **Tus mazos** — cada mazo es una ficha con su propio color: tile con su icono o, si no tiene,
+   con las iniciales del nombre; número de cartas, etiquetas, cuántas vencen hoy y una barra de
+   progreso. Buscador (a partir de cuatro mazos), filtros, botón de estudiar todo y botón de crear
+   mazo pegado sobre la barra inferior.
 
    El **color de cada mazo se deriva de su identificador**, no se guarda ni se elige: como el id
    es un uuid que no cambia, el color es siempre el mismo y crear un mazo no obliga a decidir nada.
+
+   El **icono sí se elige**, y es opcional: una rejilla de sesenta emojis de estudiar que se
+   despliega desde el formulario de crear un mazo, desde el de editarlo y desde el importador.
+   Empieza plegada porque sesenta botones entre el nombre y «Crear» convierten tres campos en una
+   pantalla de desplazarse, y al lado va la ficha tal como va a quedar. Sin icono, el tile sigue
+   siendo el monograma.
+
+   **Sin banderas en la lista**: Windows no trae glifos para ellas y las dibuja como las dos letras
+   del país —«ES», «GB»—, que es exactamente el aspecto de iniciales del que se huye al poner un
+   icono. Comprobado dibujando los sesenta en un canvas y comparándolos con el glifo de relleno.
 
    La **barra de progreso son las cartas dominadas** — las de las cajas 4 y 5, que vuelven cada 8 o
    16 días. No es «completadas»: en repetición espaciada nada se completa, así que una barra llena

@@ -9,6 +9,8 @@ export type Box = 1 | 2 | 3 | 4 | 5
 export interface Deck {
   id: string
   name: string
+  /** Icono de la ficha. Vacío o ausente: se usan las iniciales del nombre. */
+  emoji?: string
   description: string
   tags: string[]
   createdAt: number

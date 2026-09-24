@@ -5,6 +5,7 @@ import { Link } from 'react-router'
 import { createDeck, listDeckSummaries, listTags, parseTags } from '../../data/decks'
 import { matchesSearch, type DeckSummary } from '../../domain/decks'
 import { deckColor, deckInitials } from '../../lib/deckColor'
+import { EmojiPicker } from '../../ui/EmojiPicker'
 
 /** Filtros de estado. Solo los que significan algo con repetición espaciada:
  *  no hay «completados» porque una carta de la caja 5 vuelve cada 16 días. */
@@ -157,8 +158,8 @@ function DeckRow({ summary }: { summary: DeckSummary }) {
   return (
     <li className={`deck deck--${color}`}>
       <Link className="deck__link" to={`/mazo/${deck.id}`}>
-        <span className="deck__tile" aria-hidden>
-          {deckInitials(deck.name)}
+        <span className={deck.emoji ? 'deck__tile deck__tile--emoji' : 'deck__tile'} aria-hidden>
+          {deck.emoji || deckInitials(deck.name)}
         </span>
 
         <span className="deck__body">
@@ -235,6 +236,7 @@ function PlusIcon() {
 function NewDeckForm({ onClose }: { onClose: () => void }) {
   const formRef = useRef<HTMLFormElement>(null)
   const [name, setName] = useState('')
+  const [emoji, setEmoji] = useState('')
   const [description, setDescription] = useState('')
   const [tags, setTags] = useState('')
   const [saving, setSaving] = useState(false)
@@ -261,7 +263,7 @@ function NewDeckForm({ onClose }: { onClose: () => void }) {
     event.preventDefault()
     if (!canSave) return
     setSaving(true)
-    await createDeck({ name, description, tags: parseTags(tags) })
+    await createDeck({ name, emoji, description, tags: parseTags(tags) })
     onClose()
   }
 
@@ -276,6 +278,11 @@ function NewDeckForm({ onClose }: { onClose: () => void }) {
           placeholder="Anatomía, Alemán A2, Estructuras de datos…"
         />
       </label>
+
+      <div className="field">
+        <span className="field__label">Icono (opcional)</span>
+        <EmojiPicker value={emoji} onChange={setEmoji} fallback={deckInitials(name)} />
+      </div>
 
       <label className="field">
         <span className="field__label">Descripción (opcional)</span>

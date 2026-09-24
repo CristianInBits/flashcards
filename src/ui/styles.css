@@ -1747,3 +1747,85 @@ body {
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
 }
+
+/* ---------- Icono del mazo ---------- */
+
+.emoji {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.emoji__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Del tamaño de la ficha de la lista: lo que se ve aquí es lo que va a quedar. */
+.emoji__preview {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  background: var(--violet-faint);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+/* Un icono no lleva ni el grosor ni el apretado de un monograma de dos letras. */
+.emoji__preview--icon {
+  font-size: 1.6rem;
+  font-weight: 400;
+  letter-spacing: normal;
+}
+
+.emoji__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+  gap: 6px;
+  /* Sesenta iconos a pantalla completa dejarían «Crear» fuera de la vista. El
+     desplazamiento no se contagia a la página: se para al llegar al final. */
+  max-height: 232px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 10px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius);
+}
+
+.emoji__option {
+  appearance: none;
+  min-width: 46px;
+  min-height: 46px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.emoji__option.is-active {
+  background: var(--violet-soft);
+  border-color: var(--violet-line);
+}
+
+.deck__tile--emoji {
+  font-size: 1.7rem;
+  font-weight: 400;
+  letter-spacing: normal;
+}
+
+.page__emoji {
+  margin-right: 8px;
+}

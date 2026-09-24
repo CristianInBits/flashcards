@@ -5,6 +5,8 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import { createDeck, getDeck, listDecks } from '../../data/decks'
 import { importCards } from '../../data/importCards'
 import { detectFormat, parseCards, type ImportFormat } from '../../domain/import'
+import { deckInitials } from '../../lib/deckColor'
+import { EmojiPicker } from '../../ui/EmojiPicker'
 
 const PREVIEW_LIMIT = 8
 
@@ -36,6 +38,7 @@ export function ImportPage() {
   const [chosen, setChosen] = useState<ImportFormat | 'auto'>('auto')
   const [target, setTarget] = useState<string>(NUEVO)
   const [newName, setNewName] = useState(propuesto)
+  const [emoji, setEmoji] = useState('')
   const [saving, setSaving] = useState(false)
 
   const deck = useLiveQuery(
@@ -64,7 +67,8 @@ export function ImportPage() {
     if (!puedeImportar) return
     setSaving(true)
     try {
-      const destino = deckId ?? (creaMazo ? (await createDeck({ name: newName })).id : target)
+      const destino =
+        deckId ?? (creaMazo ? (await createDeck({ name: newName, emoji })).id : target)
       await importCards(destino, result.cards)
       void navigate(`/mazo/${destino}`)
     } catch (error) {
@@ -172,15 +176,22 @@ export function ImportPage() {
           </div>
 
           {creaMazo && (
-            <label className="field">
-              <span className="field__label">Nombre del mazo</span>
-              <input
-                className="input"
-                value={newName}
-                onChange={(event) => setNewName(event.target.value)}
-                placeholder="Anatomía, Alemán A2, Estructuras de datos…"
-              />
-            </label>
+            <>
+              <label className="field">
+                <span className="field__label">Nombre del mazo</span>
+                <input
+                  className="input"
+                  value={newName}
+                  onChange={(event) => setNewName(event.target.value)}
+                  placeholder="Anatomía, Alemán A2, Estructuras de datos…"
+                />
+              </label>
+
+              <div className="field">
+                <span className="field__label">Icono (opcional)</span>
+                <EmojiPicker value={emoji} onChange={setEmoji} fallback={deckInitials(newName)} />
+              </div>
+            </>
           )}
         </div>
       )}

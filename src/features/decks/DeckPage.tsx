@@ -6,7 +6,10 @@ import { deleteCard, listCards } from '../../data/cards'
 import { deleteDeck, getDeck, parseTags, updateDeck } from '../../data/decks'
 import type { Deck } from '../../domain/types'
 import { isDue } from '../../lib/date'
+import { deckInitials } from '../../lib/deckColor'
+import { emojiName } from '../../lib/emoji'
 import { toPlainText } from '../../lib/plainText'
+import { EmojiPicker } from '../../ui/EmojiPicker'
 
 export function DeckPage() {
   const { deckId = '' } = useParams()
@@ -59,7 +62,14 @@ export function DeckPage() {
       </Link>
 
       <div className="page__head">
-        <h1 className="page__title">{deck.name}</h1>
+        <h1 className="page__title">
+          {deck.emoji && (
+            <span className="page__emoji" role="img" aria-label={emojiName(deck.emoji)}>
+              {deck.emoji}
+            </span>
+          )}
+          {deck.name}
+        </h1>
         <Link className="button" to={`/mazo/${deck.id}/carta/nueva`}>
           Añadir carta
         </Link>
@@ -141,13 +151,14 @@ export function DeckPage() {
 
 function EditDeckForm({ deck, onClose }: { deck: Deck; onClose: () => void }) {
   const [name, setName] = useState(deck.name)
+  const [emoji, setEmoji] = useState(deck.emoji ?? '')
   const [description, setDescription] = useState(deck.description)
   const [tags, setTags] = useState(deck.tags.join(', '))
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault()
     if (name.trim().length === 0) return
-    await updateDeck(deck.id, { name, description, tags: parseTags(tags) })
+    await updateDeck(deck.id, { name, emoji, description, tags: parseTags(tags) })
     onClose()
   }
 
@@ -157,6 +168,11 @@ function EditDeckForm({ deck, onClose }: { deck: Deck; onClose: () => void }) {
         <span className="field__label">Nombre</span>
         <input className="input" value={name} onChange={(event) => setName(event.target.value)} />
       </label>
+
+      <div className="field">
+        <span className="field__label">Icono</span>
+        <EmojiPicker value={emoji} onChange={setEmoji} fallback={deckInitials(name)} />
+      </div>
 
       <label className="field">
         <span className="field__label">Descripción</span>
