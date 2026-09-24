@@ -1,3 +1,4 @@
+import { summarizeDecks, type DeckSummary } from '../domain/decks'
 import type { Deck } from '../domain/types'
 import { db, newId } from './db'
 import { pruneOrphanMedia } from './media'
@@ -42,6 +43,15 @@ export async function deleteDeck(id: string): Promise<void> {
 
 export function listDecks(): Promise<Deck[]> {
   return db.decks.orderBy('name').toArray()
+}
+
+/**
+ * Los mazos con sus contadores, en dos lecturas y no en tres por mazo.
+ * Con veinte mazos la diferencia es de sesenta consultas a una.
+ */
+export async function listDeckSummaries(): Promise<DeckSummary[]> {
+  const [decks, cards] = await Promise.all([listDecks(), db.cards.toArray()])
+  return summarizeDecks(decks, cards)
 }
 
 export function getDeck(id: string): Promise<Deck | undefined> {

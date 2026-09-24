@@ -1,127 +1,227 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { Link } from 'react-router'
 
-import { countCards, countDueCards } from '../../data/cards'
-import { createDeck, listDecks, listTags, parseTags } from '../../data/decks'
+import { createDeck, listDeckSummaries, listTags, parseTags } from '../../data/decks'
+import { matchesSearch, type DeckSummary } from '../../domain/decks'
+import { deckColor, deckInitials } from '../../lib/deckColor'
+
+/** Filtros de estado. Solo los que significan algo con repetición espaciada:
+ *  no hay «completados» porque una carta de la caja 5 vuelve cada 16 días. */
+type Filter = 'todos' | 'pendientes'
 
 export function DecksPage() {
-  const [activeTag, setActiveTag] = useState<string | null>(null)
+  const [search, setSearch] = useState('')
+  const [filter, setFilter] = useState<Filter>('todos')
+  const [tag, setTag] = useState<string | null>(null)
   const [creating, setCreating] = useState(false)
 
   const tags = useLiveQuery(() => listTags(), [], [])
-  const summaries = useLiveQuery(async () => {
-    const decks = await listDecks()
-    return Promise.all(
-      decks.map(async (deck) => ({
-        deck,
-        total: await countCards(deck.id),
-        due: await countDueCards(deck.id),
-      })),
-    )
-  }, [])
+  const summaries = useLiveQuery(() => listDeckSummaries(), [])
+
+  const visible = useMemo(() => {
+    if (!summaries) return []
+    return summaries.filter(({ deck, due }) => {
+      if (filter === 'pendientes' && due === 0) return false
+      if (tag && !deck.tags.includes(tag)) return false
+      return matchesSearch(deck, search)
+    })
+  }, [summaries, filter, tag, search])
 
   if (!summaries) {
     return (
       <section className="page">
-        <h1 className="page__title">Mis mazos</h1>
+        <h1 className="page__title">Tus mazos</h1>
         <p className="empty__hint">Cargando…</p>
       </section>
     )
   }
 
-  const visible = activeTag
-    ? summaries.filter((item) => item.deck.tags.includes(activeTag))
-    : summaries
-
-  const totalDue = summaries.reduce((sum, item) => sum + item.due, 0)
+  const totalDue = summaries.reduce((suma, item) => suma + item.due, 0)
+  const filtrando = search.trim().length > 0 || filter !== 'todos' || tag !== null
 
   return (
-    <section className="page">
-      <div className="page__head">
-        <h1 className="page__title">Mis mazos</h1>
-        <button type="button" className="button" onClick={() => setCreating(true)}>
-          Nuevo mazo
-        </button>
-      </div>
+    <section className="page page--decks">
+      <header className="intro">
+        <h1 className="page__title">Tus mazos</h1>
+        <p className="intro__subtitle">
+          {totalDue > 0
+            ? `Tienes ${totalDue} ${totalDue === 1 ? 'carta pendiente' : 'cartas pendientes'} hoy.`
+            : 'Hoy no te toca nada. Sigue así.'}
+        </p>
+      </header>
+
+      {summaries.length > 0 && (
+        <>
+          {totalDue > 0 && (
+            <Link className="button button--wide" to="/estudiar">
+              Estudiar todo · {totalDue} {totalDue === 1 ? 'carta' : 'cartas'}
+            </Link>
+          )}
+
+          {summaries.length > 3 && (
+            <label className="search">
+              <SearchIcon />
+              <input
+                type="search"
+                className="search__input"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Buscar mazos…"
+                aria-label="Buscar mazos"
+              />
+            </label>
+          )}
+
+          <div className="chips" role="group" aria-label="Filtrar mazos">
+            <button
+              type="button"
+              className={filter === 'todos' && !tag ? 'chip is-active' : 'chip'}
+              onClick={() => {
+                setFilter('todos')
+                setTag(null)
+              }}
+            >
+              Todos
+            </button>
+            <button
+              type="button"
+              className={filter === 'pendientes' ? 'chip is-active' : 'chip'}
+              onClick={() => setFilter(filter === 'pendientes' ? 'todos' : 'pendientes')}
+            >
+              Pendientes
+            </button>
+            {tags.map((nombre) => (
+              <button
+                key={nombre}
+                type="button"
+                className={tag === nombre ? 'chip is-active' : 'chip'}
+                onClick={() => setTag(nombre === tag ? null : nombre)}
+              >
+                {nombre}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
 
       {creating && <NewDeckForm onClose={() => setCreating(false)} />}
-
-      {totalDue > 0 && (
-        <Link className="button button--wide" to="/estudiar">
-          Estudiar todo · {totalDue} {totalDue === 1 ? 'carta' : 'cartas'}
-        </Link>
-      )}
-
-      {tags.length > 0 && (
-        <div className="chips" role="group" aria-label="Filtrar por etiqueta">
-          <button
-            type="button"
-            className={activeTag === null ? 'chip is-active' : 'chip'}
-            onClick={() => setActiveTag(null)}
-          >
-            Todas
-          </button>
-          {tags.map((tag) => (
-            <button
-              key={tag}
-              type="button"
-              className={activeTag === tag ? 'chip is-active' : 'chip'}
-              onClick={() => setActiveTag(tag === activeTag ? null : tag)}
-            >
-              {tag}
-            </button>
-          ))}
-        </div>
-      )}
 
       {visible.length === 0 ? (
         <div className="empty">
           <p className="empty__text">
-            {summaries.length === 0 ? 'Todavía no hay ningún mazo.' : 'Ningún mazo con esa etiqueta.'}
+            {summaries.length === 0
+              ? 'Todavía no hay ningún mazo.'
+              : 'Ningún mazo con ese filtro.'}
           </p>
-          {summaries.length === 0 && (
-            <p className="empty__hint">Crea uno y empieza a meterle cartas.</p>
-          )}
+          <p className="empty__hint">
+            {summaries.length === 0
+              ? 'Crea uno y empieza a meterle cartas.'
+              : 'Prueba a quitar el filtro o a buscar otra cosa.'}
+          </p>
         </div>
       ) : (
-        <ul className="list">
-          {visible.map(({ deck, total, due }) => (
-            <li key={deck.id}>
-              <div className="card-item">
-                <Link className="card-item__body" to={`/mazo/${deck.id}`}>
-                  <span className="card-item__title">{deck.name}</span>
-                  {deck.description && (
-                    <span className="card-item__subtitle">{deck.description}</span>
-                  )}
-                  {deck.tags.length > 0 && (
-                    <span className="card-item__tags">{deck.tags.join(' · ')}</span>
-                  )}
-                </Link>
-                <Link className="counts" to={`/mazo/${deck.id}`}>
-                  <span className={due > 0 ? 'count count--due' : 'count'}>{due}</span>
-                  <span className="count__label">de {total}</span>
-                </Link>
-                {/* Práctica libre a un toque, que es justo lo que se quiere
-                    cuando el mazo marca 0 vencidas y aun así quieres repasar. */}
-                {total > 0 && (
-                  <Link
-                    className="play"
-                    to={`/mazo/${deck.id}/practicar`}
-                    aria-label={`Práctica libre de ${deck.name}`}
-                    title="Práctica libre"
-                  >
-                    <svg viewBox="0 0 24 24" aria-hidden focusable="false">
-                      <path d="M8 5.5 18.5 12 8 18.5z" />
-                    </svg>
-                  </Link>
-                )}
-              </div>
-            </li>
+        <ul className="decks">
+          {visible.map((item) => (
+            <DeckRow key={item.deck.id} summary={item} />
           ))}
         </ul>
       )}
+
+      {/* Pegado sobre la barra inferior: con muchos mazos, crear uno nuevo no
+          debería obligar a desplazarse hasta el final. */}
+      {!creating && !filtrando && (
+        <div className="decks__new">
+          <button type="button" className="button button--wide" onClick={() => setCreating(true)}>
+            <PlusIcon />
+            Nuevo mazo
+          </button>
+        </div>
+      )}
     </section>
+  )
+}
+
+function DeckRow({ summary }: { summary: DeckSummary }) {
+  const { deck, total, due, mastered } = summary
+  const color = deckColor(deck.id)
+  const progreso = total > 0 ? mastered / total : 0
+
+  return (
+    <li className={`deck deck--${color}`}>
+      <Link className="deck__link" to={`/mazo/${deck.id}`}>
+        <span className="deck__tile" aria-hidden>
+          {deckInitials(deck.name)}
+        </span>
+
+        <span className="deck__body">
+          <span className="deck__head">
+            <span className="deck__name">{deck.name}</span>
+            {due > 0 && <span className="deck__due">{due}</span>}
+          </span>
+
+          <span className="deck__meta">
+            {total} {total === 1 ? 'tarjeta' : 'tarjetas'}
+            {deck.tags.length > 0 && ` · ${deck.tags.join(', ')}`}
+          </span>
+
+          <span className="deck__progress">
+            <span className="deck__track">
+              <span className="deck__fill" style={{ width: `${progreso * 100}%` }} />
+            </span>
+            <span className="deck__count">
+              {mastered}/{total}
+            </span>
+          </span>
+        </span>
+      </Link>
+
+      {total > 0 && (
+        <Link
+          className="deck__practice"
+          to={`/mazo/${deck.id}/practicar`}
+          aria-label={`Práctica libre de ${deck.name}`}
+          title="Práctica libre"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden focusable="false">
+            <path d="M8 5.5 18.5 12 8 18.5z" />
+          </svg>
+        </Link>
+      )}
+    </li>
+  )
+}
+
+function SearchIcon() {
+  return (
+    <svg
+      className="search__icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.9"
+      strokeLinecap="round"
+      aria-hidden
+    >
+      <circle cx="11" cy="11" r="6.5" />
+      <path d="m16 16 4 4" />
+    </svg>
+  )
+}
+
+function PlusIcon() {
+  return (
+    <svg
+      className="button__icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      aria-hidden
+    >
+      <path d="M12 6v12M6 12h12" />
+    </svg>
   )
 }
 

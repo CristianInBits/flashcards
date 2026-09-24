@@ -253,8 +253,18 @@ animación, para no pagar bundle. Si se queda corto, `motion` es la alternativa.
 
 ## 7. Pantallas
 
-1. **Mis mazos** — lista con contador de cartas vencidas por mazo, filtro por etiquetas, botón
-   de estudiar todo y de crear mazo.
+1. **Tus mazos** — cada mazo es una ficha con su propio color: tile con las iniciales, nombre,
+   número de cartas, etiquetas, cuántas vencen hoy y una barra de progreso. Buscador (a partir de
+   cuatro mazos), filtros, botón de estudiar todo y botón de crear mazo pegado sobre la barra
+   inferior.
+
+   El **color de cada mazo se deriva de su identificador**, no se guarda ni se elige: como el id
+   es un uuid que no cambia, el color es siempre el mismo y crear un mazo no obliga a decidir nada.
+
+   La **barra de progreso son las cartas dominadas** — las de las cajas 4 y 5, que vuelven cada 8 o
+   16 días. No es «completadas»: en repetición espaciada nada se completa, así que una barra llena
+   significa «te lo sabes», no «has terminado». Por el mismo motivo no hay filtro de «completados»;
+   los filtros son *Todos*, *Pendientes* y las etiquetas reales.
 2. **Mazo** — cartas del mazo, buscador y acciones: estudiar, añadir, importar, generar con IA.
 3. **Estudio** — la pantalla que más se usa: anverso, gesto o toque para voltear, reverso y tres
    botones. Barra de progreso de la sesión y contador de restantes.

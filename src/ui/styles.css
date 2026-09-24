@@ -75,6 +75,18 @@
   --nav-height: 68px;
 
   /* El fondo del tema claro es plano; el oscuro lo redefine. */
+  /* Cinco acentos para los mazos, derivados de su id. Dan variedad sin
+     pedirle al usuario que elija un color al crear cada uno. */
+  --deck-violet-tint: #efe9ff;
+  --deck-violet-ink: #5327cc;
+  --deck-pink-tint: #ffe5f1;
+  --deck-pink-ink: #c21d5c;
+  --deck-mint-tint: #d8f6e8;
+  --deck-mint-ink: #00795c;
+  --deck-blue-tint: #e2ecff;
+  --deck-blue-ink: #1256b8;
+  --deck-yellow-tint: #fff2ce;
+  --deck-yellow-ink: #8a5a00;
   /* Las dos cartas decorativas de detras de la principal. Tokens propios
      porque los de los botones no pueden subir de brillo con ellas. */
   --stack-violet: #cdbcff;
@@ -131,6 +143,18 @@
     --neutral: #c6b5ff;
     --neutral-soft: #332f9e;
     --neutral-line: #4a43c4;
+    /* Los mismos cinco acentos, subidos de brillo para el fondo oscuro. */
+    --deck-violet-tint: #2a2478;
+    --deck-violet-ink: #d4c4ff;
+    --deck-pink-tint: #4a1f56;
+    --deck-pink-ink: #ff9ed6;
+    --deck-mint-tint: #0f4a44;
+    --deck-mint-ink: #7ff7cf;
+    --deck-blue-tint: #123166;
+    --deck-blue-ink: #8cc4ff;
+    --deck-yellow-tint: #4a3a12;
+    --deck-yellow-ink: #ffcf6b;
+
     /* Las dos cartas decorativas de detrás de la principal. */
     --stack-violet: #6a5cf5;
     --stack-pink: #d94f9c;
@@ -197,6 +221,18 @@
   --neutral: #c6b5ff;
   --neutral-soft: #332f9e;
   --neutral-line: #4a43c4;
+  /* Los mismos cinco acentos, subidos de brillo para el fondo oscuro. */
+  --deck-violet-tint: #2a2478;
+  --deck-violet-ink: #d4c4ff;
+  --deck-pink-tint: #4a1f56;
+  --deck-pink-ink: #ff9ed6;
+  --deck-mint-tint: #0f4a44;
+  --deck-mint-ink: #7ff7cf;
+  --deck-blue-tint: #123166;
+  --deck-blue-ink: #8cc4ff;
+  --deck-yellow-tint: #4a3a12;
+  --deck-yellow-ink: #ffcf6b;
+
   /* Las dos cartas decorativas de detrás de la principal. */
   --stack-violet: #6a5cf5;
   --stack-pink: #d94f9c;
@@ -1424,4 +1460,260 @@ body {
   width: 16px;
   height: 16px;
   fill: currentColor;
+}
+
+/* ---------- Lista de mazos ---------- */
+
+.page--decks {
+  display: flex;
+  flex-direction: column;
+}
+
+.intro {
+  margin-bottom: var(--gap);
+}
+
+.intro .page__title {
+  margin-bottom: 2px;
+}
+
+.intro__subtitle {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding: 0 16px;
+  min-height: 50px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+}
+
+.search__icon {
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+.search__input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  /* 16px reales: por debajo, iOS hace zoom al enfocar el campo */
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.search__input:focus {
+  outline: none;
+}
+
+.search:focus-within {
+  border-color: var(--violet-line);
+}
+
+.button__icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Las fichas de mazo */
+
+.decks {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.deck {
+  --tint: var(--deck-violet-tint);
+  --ink: var(--deck-violet-ink);
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  padding: 12px 12px 12px 14px;
+  background: var(--tint);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+/*
+ * El hueco de la ficha: el tile, el carril de progreso y el botón de práctica.
+ *
+ * Se declara aquí y no junto a los demás tokens porque su valor referencia
+ * --ink y --tint, que solo existen en .deck: una propiedad personalizada se
+ * resuelve donde se declara, y un var() irresoluble la invalida para todo el
+ * árbol, incluidos los hijos donde sí existiría.
+ *
+ * En claro va blanco sobre la ficha teñida. En oscuro no puede ir --surface,
+ * que es un índigo brillante y pelearía con el color del mazo, así que se tiñe
+ * con el del propio mazo.
+ */
+.deck {
+  --deck-hollow: var(--surface);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .deck {
+    --deck-hollow: color-mix(in srgb, var(--ink) 18%, var(--tint));
+  }
+}
+
+:root[data-theme='dark'] .deck {
+  --deck-hollow: color-mix(in srgb, var(--ink) 18%, var(--tint));
+}
+
+.deck--pink { --tint: var(--deck-pink-tint); --ink: var(--deck-pink-ink); }
+.deck--mint { --tint: var(--deck-mint-tint); --ink: var(--deck-mint-ink); }
+.deck--blue { --tint: var(--deck-blue-tint); --ink: var(--deck-blue-ink); }
+.deck--yellow { --tint: var(--deck-yellow-tint); --ink: var(--deck-yellow-ink); }
+
+.deck__link {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.deck__tile {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  background: var(--deck-hollow);
+  border-radius: var(--radius);
+  color: var(--ink);
+  font-size: 1.2rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+.deck__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.deck__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.deck__name {
+  flex: 1;
+  min-width: 0;
+  font-size: 1.02rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Cuántas tocan hoy: es el número que decide si abres el mazo */
+.deck__due {
+  flex-shrink: 0;
+  min-width: 24px;
+  padding: 1px 7px;
+  background: var(--ink);
+  border-radius: var(--radius-pill);
+  color: var(--tint);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.deck__meta {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.deck__progress {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 3px;
+}
+
+.deck__track {
+  flex: 1;
+  height: 7px;
+  background: var(--deck-hollow);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.deck__fill {
+  display: block;
+  height: 100%;
+  background: var(--ink);
+  border-radius: var(--radius-pill);
+}
+
+.deck__count {
+  flex-shrink: 0;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.deck__practice {
+  flex-shrink: 0;
+  align-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--deck-hollow);
+  border-radius: var(--radius-pill);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.deck__practice svg {
+  width: 15px;
+  height: 15px;
+  fill: currentColor;
+}
+
+/* Crear mazo, pegado sobre la barra inferior */
+
+.decks__new {
+  position: sticky;
+  bottom: calc(var(--gap) + env(safe-area-inset-bottom, 0px));
+  margin-top: var(--gap);
+  padding-top: var(--gap);
+}
+
+.decks__new .button {
+  margin-bottom: 0;
 }
