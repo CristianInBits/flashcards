@@ -1710,10 +1710,21 @@ body {
 .decks__new {
   position: sticky;
   bottom: calc(var(--gap) + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  gap: 10px;
   margin-top: var(--gap);
   padding-top: var(--gap);
 }
 
 .decks__new .button {
   margin-bottom: 0;
+}
+
+/* Crear pesa más que importar, pero importar tiene que caber sin partirse. */
+.decks__new .button:first-child {
+  flex: 2;
+}
+
+.decks__new .button:last-child {
+  flex: 1;
 }

@@ -292,6 +292,13 @@ Tres formatos soportados, detectados automáticamente y forzables a mano:
 La previsualización antes de confirmar es parte del alcance: importar a ciegas 200 cartas mal
 cortadas es el error más caro de deshacer.
 
+**El importador puede crear el mazo él mismo.** Se entra desde la pantalla principal (`/importar`,
+eligiendo destino) o desde un mazo concreto (`/mazo/:deckId/importar`, con el destino ya fijado).
+Obligar a crear el mazo antes dejaba un mazo vacío que borrar a mano si el fichero no valía, y
+convertía «tengo unos apuntes, hazme un mazo» —que es como nace la mayoría de los mazos— en tres
+pasos. Al subir un fichero, su nombre rellena el del mazo: `Anatomia_tema-3.csv` propone
+«Anatomia tema 3».
+
 ## 8 bis. Imágenes y copia de seguridad
 
 Las imágenes no caben en el Markdown: se guardan como blobs en IndexedDB y en el texto queda

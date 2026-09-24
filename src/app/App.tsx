@@ -18,6 +18,8 @@ export function App() {
         <Route path="estudiar" element={<StudyPage />} />
         <Route path="mazo/:deckId" element={<DeckPage />} />
         <Route path="mazo/:deckId/estudiar" element={<StudyPage />} />
+        {/* Sin mazo: el importador pregunta el destino y puede crearlo */}
+        <Route path="importar" element={<ImportPage />} />
         {/* Práctica libre: el mazo entero, sin escribir nada */}
         <Route path="mazo/:deckId/practicar" element={<StudyPage mode="practice" />} />
         {/* La ruta estática gana a la dinámica, así que «nueva» no se confunde con un id */}

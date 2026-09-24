@@ -132,10 +132,15 @@ export function DecksPage() {
           debería obligar a desplazarse hasta el final. */}
       {!creating && !filtrando && (
         <div className="decks__new">
-          <button type="button" className="button button--wide" onClick={() => setCreating(true)}>
+          <button type="button" className="button" onClick={() => setCreating(true)}>
             <PlusIcon />
             Nuevo mazo
           </button>
+          {/* El importador crea el mazo él mismo, así que no hace falta crearlo
+              antes para tener dónde meter los apuntes. */}
+          <Link className="button button--ghost" to="/importar">
+            Importar
+          </Link>
         </div>
       )}
     </section>
