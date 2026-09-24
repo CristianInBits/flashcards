@@ -39,6 +39,9 @@ export function DeckPage() {
     )
   }
 
+  // Se cuenta aquí en vez de con otra consulta: las cartas ya están cargadas.
+  const dueCount = cards.filter((card) => !card.suspended && isDue(card.dueDate)).length
+
   async function handleDelete(target: Deck) {
     const message =
       cards && cards.length > 0
@@ -64,6 +67,12 @@ export function DeckPage() {
 
       {deck.description && <p className="page__subtitle">{deck.description}</p>}
       {deck.tags.length > 0 && <p className="card-item__tags">{deck.tags.join(' · ')}</p>}
+
+      {dueCount > 0 && (
+        <Link className="button button--wide" to={`/mazo/${deck.id}/estudiar`}>
+          Estudiar {dueCount} {dueCount === 1 ? 'carta' : 'cartas'}
+        </Link>
+      )}
 
       <div className="form__actions">
         <button type="button" className="button button--ghost" onClick={() => setEditing(true)}>

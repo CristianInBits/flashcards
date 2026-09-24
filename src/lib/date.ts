@@ -30,3 +30,18 @@ export function addDays(date: IsoDate, days: number): IsoDate {
 export function isDue(dueDate: IsoDate, reference: IsoDate = today()): boolean {
   return dueDate <= reference
 }
+
+/** Convierte a Date a medianoche local, para poder darle formato. */
+export function fromIsoDate(date: IsoDate): Date {
+  const [year, month, day] = date.split('-').map(Number)
+  return new Date(year, month - 1, day)
+}
+
+/** Días naturales que faltan. Negativo si la fecha ya pasó, 0 si es hoy. */
+export function daysUntil(date: IsoDate, reference: IsoDate = today()): number {
+  const from = fromIsoDate(reference).getTime()
+  const to = fromIsoDate(date).getTime()
+  // Se redondea porque entre las dos fechas puede haber un cambio de hora,
+  // y entonces la diferencia no son exactamente 24 h por día.
+  return Math.round((to - from) / 86_400_000)
+}

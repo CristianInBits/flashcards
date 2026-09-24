@@ -125,8 +125,9 @@ Cinco cajas con intervalos fijos en días:
 Reglas:
 
 - Una carta nueva nace en la **caja 1** con `dueDate` = hoy.
-- **Mal** → vuelve a la caja 1, `dueDate` = mañana, `lapses += 1`, y se reencola al final de
-  la sesión actual para volver a verla hoy.
+- **Mal** → vuelve a la caja 1, `dueDate` = mañana, y se reencola al final de la sesión actual
+  para volver a verla hoy. Suma una recaída (`lapses`) **solo si venía de una caja superior**:
+  fallar una carta que ya estaba en la caja 1 es aprenderla, no recaer.
 - **Bien** → sube una caja (tope 5), `dueDate` = hoy + intervalo de la nueva caja.
 - **Fácil** → sube dos cajas (tope 5), `dueDate` = hoy + intervalo de la nueva caja.
 - Una carta está **vencida** si `dueDate <= hoy`, comparando fechas locales a medianoche, no
@@ -140,8 +141,10 @@ termina cuando de verdad no queda nada vencido. Es el propio algoritmo el que re
 si un día toca mucho, es porque ese día toca mucho.
 
 Esta lógica vive en `src/domain/leitner.ts` como **funciones puras**
-(`grade(card, grade, today) → card`), cubiertas por tests. Así, migrar a FSRS en el futuro es
-sustituir un módulo, no reescribir la aplicación.
+(`gradeCard(card, grade, now) → { card, log }`), y la cola de la sesión en `src/domain/session.ts`
+(`startSession`, `answer`), inmutable: cada respuesta devuelve una sesión nueva. Ambos están
+cubiertos por tests, así que migrar a FSRS en el futuro es sustituir un módulo, no reescribir
+la aplicación.
 
 ## 6. Arquitectura
 
@@ -232,7 +235,7 @@ cortadas es el error más caro de deshacer.
 |---|---|---|
 | 0 ✅ | Andamiaje: Vite + React + TS, estructura de carpetas, PWA mínima, Action de despliegue | App instalable en el móvil desde GitHub Pages |
 | 1 ✅ | Modelo de datos, Dexie, CRUD de mazos y cartas, editor con Markdown/LaTeX/código | Se pueden crear y organizar cartas |
-| 2 | Motor Leitner con tests, pantalla de estudio, volteo y gestos | **La app ya sirve para estudiar** |
+| 2 ✅ | Motor Leitner con tests, pantalla de estudio, volteo y gestos | **La app ya sirve para estudiar** |
 | 3 | Importadores Markdown/CSV, imágenes, copia de seguridad JSON | Se pueden volcar los apuntes que ya tienes |
 | 4 | Estadísticas, racha, tema claro/oscuro, ajustes | Versión 1.0 |
 | 5 | Generación con IA | |

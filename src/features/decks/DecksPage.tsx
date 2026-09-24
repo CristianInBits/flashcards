@@ -34,6 +34,8 @@ export function DecksPage() {
     ? summaries.filter((item) => item.deck.tags.includes(activeTag))
     : summaries
 
+  const totalDue = summaries.reduce((sum, item) => sum + item.due, 0)
+
   return (
     <section className="page">
       <div className="page__head">
@@ -44,6 +46,12 @@ export function DecksPage() {
       </div>
 
       {creating && <NewDeckForm onClose={() => setCreating(false)} />}
+
+      {totalDue > 0 && (
+        <Link className="button button--wide" to="/estudiar">
+          Estudiar todo · {totalDue} {totalDue === 1 ? 'carta' : 'cartas'}
+        </Link>
+      )}
 
       {tags.length > 0 && (
         <div className="chips" role="group" aria-label="Filtrar por etiqueta">

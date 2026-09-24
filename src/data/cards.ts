@@ -63,10 +63,37 @@ export function countCards(deckId: string): Promise<number> {
  * Cartas vencidas de un mazo: las que tocan hoy y las atrasadas.
  * Usa el índice compuesto [deckId+dueDate], así que no recorre el mazo entero.
  */
-export async function countDueCards(deckId: string, reference: IsoDate = today()): Promise<number> {
+export async function listDueCards(
+  deckId: string,
+  reference: IsoDate = today(),
+): Promise<Card[]> {
   const due = await db.cards
     .where('[deckId+dueDate]')
     .between([deckId, ''], [deckId, reference], true, true)
     .toArray()
-  return due.filter((card) => !card.suspended).length
+  return due.filter((card) => !card.suspended)
+}
+
+export async function countDueCards(deckId: string, reference: IsoDate = today()): Promise<number> {
+  return (await listDueCards(deckId, reference)).length
+}
+
+/** Todas las cartas vencidas, de todos los mazos, para la sesión conjunta. */
+export async function listAllDueCards(reference: IsoDate = today()): Promise<Card[]> {
+  const due = await db.cards.where('dueDate').belowOrEqual(reference).toArray()
+  return due.filter((card) => !card.suspended)
+}
+
+/**
+ * Primera fecha en la que vuelve a haber algo que repasar, para poder decir
+ * «vuelve el martes» en vez de dejar una pantalla vacía sin explicación.
+ * `undefined` si el mazo no tiene cartas.
+ */
+export async function nextDueDate(deckId?: string): Promise<IsoDate | undefined> {
+  const cards = deckId
+    ? await db.cards.where('deckId').equals(deckId).toArray()
+    : await db.cards.toArray()
+
+  const pending = cards.filter((card) => !card.suspended).map((card) => card.dueDate)
+  return pending.length > 0 ? pending.reduce((a, b) => (a < b ? a : b)) : undefined
 }
