@@ -12,7 +12,7 @@ const THEMES: Theme[] = ['system', 'light', 'dark']
 
 /** Los mismos que --bg en la hoja de estilos, para cada tema. */
 const LIGHT_COLOR = '#f7f7fc'
-const DARK_COLOR = '#161a24'
+const DARK_COLOR = '#141a4d'
 
 export function readTheme(): Theme {
   try {

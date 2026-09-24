@@ -26,6 +26,10 @@ export function AppShell() {
 
   return (
     <div className="shell">
+      {/* Las manchas de color del fondo. Decorativa y fija: no se desplaza al
+          hacer scroll ni recibe eventos. */}
+      <div className="shell__mesh" aria-hidden />
+
       <header className="shell__header">
         <span className="shell__title">
           Cart<i>i</i>

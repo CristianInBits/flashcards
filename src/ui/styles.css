@@ -73,6 +73,9 @@
   --header-height: 60px;
   --nav-height: 68px;
 
+  /* El fondo del tema claro es plano; el oscuro lo redefine. */
+  --bg-mesh: none;
+
   --font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-mono: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
 }
@@ -86,42 +89,53 @@
   :root:not([data-theme='light']) {
     color-scheme: dark;
 
-    --bg: #161a24;
-    --bg-soft: #11141d;
-    --surface: #1e2230;
-    --surface-soft: #242938;
-    --card: #232838;
-    --border: #333a4d;
-    --border-soft: #2b3142;
-    --divider: #2b3142;
+    --bg: #141a4d;
+    --bg-soft: #0e1338;
+    --surface: #222b73;
+    --surface-soft: #2a3486;
+    --card: #26307e;
+    --border: #3a46a3;
+    --border-soft: #2e3a8c;
+    --divider: #2e3a8c;
 
-    --text: #e9ebf3;
-    --text-secondary: #b3b9cb;
-    --text-muted: #8d94a8;
+    --text: #e8ecff;
+    --text-secondary: #c0c8f5;
+    --text-muted: #b3bbe8;
 
-    --violet: #a39ade;
-    --violet-ink: #c9c2f5;
-    --violet-soft: #2c2b45;
-    --violet-faint: #24243a;
-    --violet-line: #3b3a58;
+    --violet: #b8a6ff;
+    --violet-ink: #ddd4ff;
+    --violet-soft: #332f8f;
+    --violet-faint: #232a6b;
+    --violet-line: #45419f;
 
-    --pink: #d7a2bb;
-    --pink-soft: #3a2c37;
-    --mint-soft: #22352f;
-    --mint-ink: #8fc2ac;
-    --blue-soft: #232b3d;
-    --yellow-soft: #3a3527;
+    --pink: #ff9fd0;
+    --pink-soft: #4a2565;
+    --mint-soft: #0f4440;
+    --mint-ink: #6fe3c6;
+    --blue-soft: #1e2a6e;
+    --yellow-soft: #3d3520;
 
-    --danger: #d79aa9;
-    --danger-soft: #3a2730;
-    --danger-line: #4d323d;
-    --success: #8fc2ac;
-    --success-soft: #22352f;
-    --success-line: #334a41;
-    --neutral: #a79ce0;
-    --neutral-soft: #2b2a40;
-    --neutral-line: #3b3a54;
+    --danger: #ff9bb3;
+    --danger-soft: #4d2248;
+    --danger-line: #68315e;
+    --success: #6fe3c6;
+    --success-soft: #0f4440;
+    --success-line: #1a6359;
+    --neutral: #8fb4ff;
+    --neutral-soft: #26357f;
+    --neutral-line: #37489c;
 
+    /*
+     * Tres manchas difuminadas sobre el índigo. Las opacidades no son
+     * estéticas sino calculadas: donde las tres se solapan aclaran el fondo,
+     * y el texto apagado encima tiene que seguir pasando el 4.5:1. A 18/16/13
+     * el peor solape da 4.76; con las opacidades que parecían bien a ojo
+     * (55/32/22) bajaba a 2.08.
+     */
+    --bg-mesh:
+      radial-gradient(circle at 18% 6%, rgb(129 78 255 / 0.18), transparent 45%),
+      radial-gradient(circle at 88% 32%, rgb(255 92 176 / 0.16), transparent 42%),
+      radial-gradient(circle at 55% 96%, rgb(50 190 255 / 0.13), transparent 48%);
     --shadow-card: 0 10px 24px rgb(0 0 0 / 0.28);
     --shadow-soft: 0 5px 12px rgb(0 0 0 / 0.2);
     --shadow-nav: 0 -4px 10px rgb(0 0 0 / 0.18);
@@ -131,42 +145,53 @@
 :root[data-theme='dark'] {
   color-scheme: dark;
 
-  --bg: #161a24;
-  --bg-soft: #11141d;
-  --surface: #1e2230;
-  --surface-soft: #242938;
-  --card: #232838;
-  --border: #333a4d;
-  --border-soft: #2b3142;
-  --divider: #2b3142;
+  --bg: #141a4d;
+  --bg-soft: #0e1338;
+  --surface: #222b73;
+  --surface-soft: #2a3486;
+  --card: #26307e;
+  --border: #3a46a3;
+  --border-soft: #2e3a8c;
+  --divider: #2e3a8c;
 
-  --text: #e9ebf3;
-  --text-secondary: #b3b9cb;
-  --text-muted: #8d94a8;
+  --text: #e8ecff;
+  --text-secondary: #c0c8f5;
+  --text-muted: #b3bbe8;
 
-  --violet: #a39ade;
-  --violet-ink: #c9c2f5;
-  --violet-soft: #2c2b45;
-  --violet-faint: #24243a;
-  --violet-line: #3b3a58;
+  --violet: #b8a6ff;
+  --violet-ink: #ddd4ff;
+  --violet-soft: #332f8f;
+  --violet-faint: #232a6b;
+  --violet-line: #45419f;
 
-  --pink: #d7a2bb;
-  --pink-soft: #3a2c37;
-  --mint-soft: #22352f;
-  --mint-ink: #8fc2ac;
-  --blue-soft: #232b3d;
-  --yellow-soft: #3a3527;
+  --pink: #ff9fd0;
+  --pink-soft: #4a2565;
+  --mint-soft: #0f4440;
+  --mint-ink: #6fe3c6;
+  --blue-soft: #1e2a6e;
+  --yellow-soft: #3d3520;
 
-  --danger: #d79aa9;
-  --danger-soft: #3a2730;
-  --danger-line: #4d323d;
-  --success: #8fc2ac;
-  --success-soft: #22352f;
-  --success-line: #334a41;
-  --neutral: #a79ce0;
-  --neutral-soft: #2b2a40;
-  --neutral-line: #3b3a54;
+  --danger: #ff9bb3;
+  --danger-soft: #4d2248;
+  --danger-line: #68315e;
+  --success: #6fe3c6;
+  --success-soft: #0f4440;
+  --success-line: #1a6359;
+  --neutral: #8fb4ff;
+  --neutral-soft: #26357f;
+  --neutral-line: #37489c;
 
+  /*
+   * Tres manchas difuminadas sobre el índigo. Las opacidades no son
+   * estéticas sino calculadas: donde las tres se solapan aclaran el fondo,
+   * y el texto apagado encima tiene que seguir pasando el 4.5:1. A 18/16/13
+   * el peor solape da 4.76; con las opacidades que parecían bien a ojo
+   * (55/32/22) bajaba a 2.08.
+   */
+  --bg-mesh:
+    radial-gradient(circle at 18% 6%, rgb(129 78 255 / 0.18), transparent 45%),
+    radial-gradient(circle at 88% 32%, rgb(255 92 176 / 0.16), transparent 42%),
+    radial-gradient(circle at 55% 96%, rgb(50 190 255 / 0.13), transparent 48%);
   --shadow-card: 0 10px 24px rgb(0 0 0 / 0.28);
   --shadow-soft: 0 5px 12px rgb(0 0 0 / 0.2);
   --shadow-nav: 0 -4px 10px rgb(0 0 0 / 0.18);
@@ -200,6 +225,23 @@ body {
 
 /* ---------- Estructura ---------- */
 
+/*
+ * El degradado va en su propia capa fija y no en el body: con
+ * background-attachment: fixed, iOS Safari repinta en cada scroll y se nota.
+ */
+.shell__mesh {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-image: var(--bg-mesh);
+  pointer-events: none;
+}
+
+.shell__main {
+  position: relative;
+  z-index: 1;
+}
+
 .shell {
   display: flex;
   flex-direction: column;
@@ -216,7 +258,15 @@ body {
   gap: var(--gap);
   height: calc(var(--header-height) + env(safe-area-inset-top, 0px));
   padding: env(safe-area-inset-top, 0px) var(--gutter) 0;
-  background: var(--bg);
+  /* Translúcida para que el degradado se vea por detrás, y desenfocada para
+     que el contenido que pasa por debajo al hacer scroll no se lea. */
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .shell__header { background: var(--bg); }
 }
 
 .shell__title {
@@ -776,7 +826,9 @@ body {
 
 .progress {
   height: 5px;
-  background: var(--bg-soft);
+  /* --bg-soft sobre el degradado se ve como un agujero negro; el violeta
+     apagado se lee como carril en los dos temas. */
+  background: var(--violet-faint);
   border-radius: var(--radius-pill);
   overflow: hidden;
 }
@@ -1224,7 +1276,7 @@ body {
 .boxes__track {
   flex: 1;
   height: 9px;
-  background: var(--bg-soft);
+  background: var(--violet-faint);
   border-radius: var(--radius-pill);
   overflow: hidden;
 }

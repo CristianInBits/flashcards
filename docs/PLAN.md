@@ -196,9 +196,24 @@ fuertes**; el violeta de marca se reserva para acentos, estado activo e indicado
 en superficies grandes. El rosa, el verde y el azul quedan para estados.
 
 Todo son tokens CSS en `src/ui/styles.css`: el tema claro los define en `:root` y el oscuro solo
-los redefine. El oscuro no es el claro invertido — los pasteles suben de saturación para que no se
-apaguen, y el fondo es el azul marino del icono para que la pantalla de arranque no dé un salto de
-color al instalar.
+los redefine.
+
+El **tema oscuro** no es el claro invertido ni un gris teñido. Se probaron primero tres paletas de
+editor de código (Catppuccin, Rosé Pine, Tokyo Night) y las tres se veían igual de apagadas; la
+medición explicó por qué: **la tarjeta de estudio, que ocupa media pantalla, estaba entre S19 y S24
+de saturación en todas**. El acento son cuatro píxeles y la tarjeta es la pantalla. Material 3 lo
+documenta: las superficies oscuras se derivan de una paleta neutra de croma bajo, y hay que
+derivarlas del color de marca para que dejen de ser grises.
+
+El oscuro actual es un índigo con las superficies a S54, más del doble, y un degradado de tres
+manchas difuminadas sobre el fondo. **Las opacidades de las manchas están calculadas, no elegidas
+a ojo**: donde las tres se solapan aclaran el fondo, y el texto apagado encima tiene que seguir
+pasando el 4.5:1. A 18/16/13% el peor solape da 4.76; con las opacidades que quedaban bien a
+primera vista (55/32/22) bajaba a 2.08.
+
+El degradado vive en una capa fija propia (`.shell__mesh`) y no en el `body` con
+`background-attachment: fixed`, que en iOS Safari repinta en cada scroll. La cabecera es
+translúcida con desenfoque, porque opaca taparía el degradado con una banda plana.
 
 **Cada pareja de texto y fondo llega al 4.5:1 de la WCAG AA.** Se midieron una a una y varias hubo
 que oscurecerlas: una paleta pastel se queda corta de contraste con muchísima facilidad, y la app
