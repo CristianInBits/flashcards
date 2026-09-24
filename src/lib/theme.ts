@@ -11,7 +11,7 @@ const KEY = 'carti:theme'
 const THEMES: Theme[] = ['system', 'light', 'dark']
 
 /** Los mismos que --bg en la hoja de estilos, para cada tema. */
-const LIGHT_COLOR = '#f7f7fc'
+const LIGHT_COLOR = '#f6f4ff'
 const DARK_COLOR = '#06081f'
 
 export function readTheme(): Theme {

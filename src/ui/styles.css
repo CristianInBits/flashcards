@@ -16,44 +16,44 @@
   color-scheme: light;
 
   /* Superficies */
-  --bg: #f7f7fc;
-  --bg-soft: #f1f2fa;
+  --bg: #f6f4ff;
+  --bg-soft: #efecff;
   --surface: #ffffff;
-  --surface-soft: #fafafe;
+  --surface-soft: #faf8ff;
   --card: #fffdf9;
-  --border: #e8e6f0;
-  --border-soft: #eef0f6;
-  --divider: #ececf3;
+  --border: #e3dcf7;
+  --border-soft: #ece7fa;
+  --divider: #eae5f8;
 
   /* Texto */
-  --text: #18264f;
-  --text-secondary: #596482;
-  --text-muted: #6b7494;
+  --text: #1b1749;
+  --text-secondary: #564f82;
+  --text-muted: #645f96;
 
   /* Marca */
-  --violet: #8b72e8;
-  --violet-ink: #5c44b8;
-  --violet-soft: #e8e2ff;
-  --violet-faint: #f2efff;
-  --violet-line: #d9cfff;
+  --violet: #7b4ff0;
+  --violet-ink: #5327cc;
+  --violet-soft: #ded3ff;
+  --violet-faint: #f0ebff;
+  --violet-line: #cdbcff;
 
-  --pink: #e98cb7;
-  --pink-soft: #fce4ee;
-  --mint-soft: #e2f6ee;
-  --mint-ink: #2e7861;
-  --blue-soft: #e9effa;
-  --yellow-soft: #fff4cb;
+  --pink: #f36bab;
+  --pink-soft: #ffdcec;
+  --mint-soft: #cdf4e3;
+  --mint-ink: #00795c;
+  --blue-soft: #e0e9ff;
+  --yellow-soft: #fff0bf;
 
   /* Estados */
-  --danger: #a6456a;
-  --danger-soft: #fbe1ea;
-  --danger-line: #f5cad9;
-  --success: #2e7861;
-  --success-soft: #dff4eb;
-  --success-line: #c5eada;
-  --neutral: #5b4fb8;
-  --neutral-soft: #eeeafb;
-  --neutral-line: #ddd7f5;
+  --danger: #c21d5c;
+  --danger-soft: #ffdde8;
+  --danger-line: #ffc2d6;
+  --success: #00795c;
+  --success-soft: #cdf4e3;
+  --success-line: #a9e8cd;
+  --neutral: #4f34cc;
+  --neutral-soft: #e6dfff;
+  --neutral-line: #cfc2fa;
 
   --accent: var(--violet);
 
@@ -77,8 +77,8 @@
   /* El fondo del tema claro es plano; el oscuro lo redefine. */
   /* Las dos cartas decorativas de detras de la principal. Tokens propios
      porque los de los botones no pueden subir de brillo con ellas. */
-  --stack-violet: #e8e2ff;
-  --stack-pink: #fce4ee;
+  --stack-violet: #cdbcff;
+  --stack-pink: #ffcfe4;
 
   --bg-mesh: none;
 
@@ -883,7 +883,10 @@ body {
   perspective: 1200px;
   /* Vertical para la página, horizontal para el gesto de calificar */
   touch-action: pan-y;
-  margin: 6px 0;
+  /* Más estrecho que la página para que las cartas giradas de detrás quepan
+     enteras: al girar, una tarjeta sobresale por los lados tanto más cuanto
+     más alta es, y con los 20px de la página no llegaba. */
+  margin: 6px 24px;
 }
 
 .flashcard__stack {
@@ -895,19 +898,19 @@ body {
 
 .flashcard__stack--lavender {
   background: var(--stack-violet);
-  transform: rotate(-7deg) translate(-17px, -9px);
+  transform: rotate(-5deg) translate(-13px, -7px);
 }
 
 .flashcard__stack--pink {
   background: var(--stack-pink);
-  transform: rotate(7deg) translate(18px, 10px);
+  transform: rotate(5deg) translate(13px, 8px);
 }
 
 .flashcard__inner {
   position: relative;
   display: grid;
   width: 100%;
-  min-height: 300px;
+  min-height: 280px;
   padding: 0;
   background: none;
   border: none;

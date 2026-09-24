@@ -221,6 +221,12 @@ scroll y rompería la cabecera pegajosa.
 aclaran el fondo, y el texto apagado encima tiene que seguir pasando el 4.5:1. A 18/16/13% el peor
 solape da 6.11; con las opacidades que quedaban bien a primera vista (55/32/22) bajaba a 2.08.
 
+**El conjunto de tarjetas es más estrecho que la página** (`margin: 6px 24px`) por geometría, no
+por estética: al girar, una tarjeta sobresale por los lados tanto más cuanto más alta es, y con los
+20 px de margen de la página las de detrás salían cortadas por el borde de la pantalla. Con 24 px
+de margen, 5° de giro y 13 px de desplazamiento, el conjunto cabe entero hasta unos 700 px de alto
+de tarjeta; por encima de eso el recorte lo absorbe sin provocar scroll.
+
 El degradado vive en una capa fija propia (`.shell__mesh`) y no en el `body` con
 `background-attachment: fixed`, que en iOS Safari repinta en cada scroll. La cabecera es
 translúcida con desenfoque, porque opaca taparía el degradado con una banda plana.
