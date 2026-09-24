@@ -824,3 +824,74 @@ body {
     transition: none;
   }
 }
+
+/* ---------- Avisos, importación e imágenes ---------- */
+
+.page__title--small {
+  margin-top: var(--gap);
+  font-size: 1.1rem;
+}
+
+.notice {
+  margin-bottom: var(--gap);
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+}
+
+.notice summary {
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.notice__text {
+  margin: 0 0 12px;
+}
+
+.notice__text:last-child {
+  margin-bottom: 0;
+}
+
+.notice__list {
+  margin: 12px 0 0;
+  padding-left: 20px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  word-break: break-word;
+}
+
+.notice--error {
+  border-color: #e5484d;
+  color: #e5484d;
+}
+
+.notice--warning {
+  border-color: var(--accent);
+}
+
+.notice .form__actions {
+  margin-bottom: 0;
+}
+
+/* Marcador mientras la imagen sale de IndexedDB, o si ya no está */
+.markdown__media {
+  display: inline-block;
+  padding: 4px 10px;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.markdown__media--missing {
+  border-color: #e5484d;
+  color: #e5484d;
+}
+
+/* Una imagen no debería tapar la pregunta entera en la pantalla de estudio */
+.flashcard__face .markdown img {
+  max-height: 40vh;
+  object-fit: contain;
+}

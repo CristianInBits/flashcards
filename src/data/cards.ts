@@ -1,6 +1,8 @@
 import { today, type IsoDate } from '../lib/date'
+import { extractMediaIds } from '../lib/media'
 import type { Card } from '../domain/types'
 import { db, newId } from './db'
+import { pruneOrphanMedia } from './media'
 
 export interface CardInput {
   deckId: string
@@ -15,7 +17,7 @@ export async function createCard(input: CardInput): Promise<Card> {
     deckId: input.deckId,
     front: input.front.trim(),
     back: input.back.trim(),
-    mediaIds: [],
+    mediaIds: extractMediaIds(input.front, input.back),
     // Una carta nueva nace en la caja 1 y vencida: entra en la siguiente sesión.
     box: 1,
     dueDate: today(),
@@ -37,7 +39,21 @@ export async function updateCard(
   if (patch.front !== undefined) changes.front = patch.front.trim()
   if (patch.back !== undefined) changes.back = patch.back.trim()
   if (patch.suspended !== undefined) changes.suspended = patch.suspended
+
+  const touchesContent = patch.front !== undefined || patch.back !== undefined
+  if (touchesContent) {
+    const current = await db.cards.get(id)
+    if (current) {
+      changes.mediaIds = extractMediaIds(
+        changes.front ?? current.front,
+        changes.back ?? current.back,
+      )
+    }
+  }
+
   await db.cards.update(id, changes)
+  // Fuera de la escritura: si al editar has quitado una imagen, su blob sobra.
+  if (touchesContent) await pruneOrphanMedia()
 }
 
 export async function deleteCard(id: string): Promise<void> {
@@ -45,6 +61,9 @@ export async function deleteCard(id: string): Promise<void> {
     await db.reviewLogs.where('cardId').equals(id).delete()
     await db.cards.delete(id)
   })
+  // Después de la transacción, no dentro: recoger la basura necesita la tabla
+  // de imágenes, que no está en el alcance de la de arriba.
+  await pruneOrphanMedia()
 }
 
 export function listCards(deckId: string): Promise<Card[]> {

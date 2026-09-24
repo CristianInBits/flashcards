@@ -4,9 +4,9 @@ Tarjetas de estudio con repetición espaciada. Aplicación web instalable en el 
 funciona sin conexión y guarda todo en el propio dispositivo: sin cuentas, sin servidor y sin
 que los datos salgan de ahí.
 
-Nombre provisional. Fases 0 a 2 completadas: **ya se puede estudiar**. Crear mazos y cartas con
-Markdown, fórmulas LaTeX y código, y repasarlas con repetición espaciada. Faltan los importadores
-y la copia de seguridad (fase 3), y las estadísticas (fase 4).
+Nombre provisional. Fases 0 a 3 completadas: crear mazos y cartas con Markdown, fórmulas LaTeX,
+código e imágenes; estudiarlas con repetición espaciada; importar apuntes desde Markdown o CSV;
+y guardar y restaurar una copia de seguridad. Faltan las estadísticas (fase 4) y la IA (fase 5).
 
 - [Plan y alcance](docs/PLAN.md) — decisiones, modelo de datos, algoritmo y hoja de ruta.
 - [Icono](docs/ICONO.md) — prompt de generación y requisitos de los distintos tamaños.

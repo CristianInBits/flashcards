@@ -209,10 +209,33 @@ Tres formatos soportados, detectados automáticamente y forzables a mano:
    espaciada de Obsidian, cómodo para apuntes que ya existen.
 2. **Por encabezados** — cada `##` es la pregunta y el contenido hasta el siguiente encabezado es
    la respuesta. Bueno para respuestas largas con formato.
-3. **CSV/TSV** — columnas `anverso,reverso,etiquetas`, con cabecera opcional.
+3. **CSV/TSV** — primera columna la pregunta, segunda la respuesta, con cabecera opcional. El
+   delimitador se detecta entre coma, **punto y coma** (lo que exporta Excel en español) y
+   tabulador, y las comillas se respetan, así que una respuesta con comas no rompe la
+   importación. Las columnas de más se ignoran: no hay etiquetas por carta, las etiquetas son
+   del mazo.
 
 La previsualización antes de confirmar es parte del alcance: importar a ciegas 200 cartas mal
 cortadas es el error más caro de deshacer.
+
+## 8 bis. Imágenes y copia de seguridad
+
+Las imágenes no caben en el Markdown: se guardan como blobs en IndexedDB y en el texto queda
+una referencia `![descripción](carti:<id>)`. Se usa un esquema propio en vez de una URL de
+objeto porque las URL de objeto mueren al recargar y el texto de la carta se guarda para
+siempre. Antes de guardarla, una imagen de más de 1600 px o de medio mega se reescala y se
+recodifica a WebP con calidad 0,9 — alta a propósito, porque aquí hay esquemas con texto y el
+texto es lo primero que se emborrona al comprimir.
+
+Los blobs que ya no cita ninguna carta se borran al editar o borrar una carta. Se recorren
+todas las cartas en vez de llevar un contador de referencias: cuesta milisegundos y un contador
+mal llevado deja basura invisible o borra una imagen que sí se usaba.
+
+La copia de seguridad es un JSON con todo dentro, las imágenes incluidas como data URL.
+Restaurar **reemplaza** lo que haya en el dispositivo, no fusiona: mezclar dos bases con los
+mismos identificadores acaba en cartas duplicadas o pisadas, y una copia es para volver a un
+estado conocido. En el móvil se ofrece por el menú de compartir del sistema, porque en iOS una
+descarga directa desde una app instalada no lleva a ninguna parte.
 
 ## 9. Generación con IA
 
@@ -236,7 +259,7 @@ cortadas es el error más caro de deshacer.
 | 0 ✅ | Andamiaje: Vite + React + TS, estructura de carpetas, PWA mínima, Action de despliegue | App instalable en el móvil desde GitHub Pages |
 | 1 ✅ | Modelo de datos, Dexie, CRUD de mazos y cartas, editor con Markdown/LaTeX/código | Se pueden crear y organizar cartas |
 | 2 ✅ | Motor Leitner con tests, pantalla de estudio, volteo y gestos | **La app ya sirve para estudiar** |
-| 3 | Importadores Markdown/CSV, imágenes, copia de seguridad JSON | Se pueden volcar los apuntes que ya tienes |
+| 3 ✅ | Importadores Markdown/CSV, imágenes, copia de seguridad JSON | Se pueden volcar los apuntes que ya tienes |
 | 4 | Estadísticas, racha, tema claro/oscuro, ajustes | Versión 1.0 |
 | 5 | Generación con IA | |
 

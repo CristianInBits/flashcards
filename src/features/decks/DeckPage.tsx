@@ -75,6 +75,9 @@ export function DeckPage() {
       )}
 
       <div className="form__actions">
+        <Link className="button button--ghost" to={`/mazo/${deck.id}/importar`}>
+          Importar
+        </Link>
         <button type="button" className="button button--ghost" onClick={() => setEditing(true)}>
           Editar mazo
         </button>

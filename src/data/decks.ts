@@ -1,5 +1,6 @@
 import type { Deck } from '../domain/types'
 import { db, newId } from './db'
+import { pruneOrphanMedia } from './media'
 
 export interface DeckInput {
   name: string
@@ -36,6 +37,7 @@ export async function deleteDeck(id: string): Promise<void> {
     await db.reviewLogs.where('deckId').equals(id).delete()
     await db.decks.delete(id)
   })
+  await pruneOrphanMedia()
 }
 
 export function listDecks(): Promise<Deck[]> {

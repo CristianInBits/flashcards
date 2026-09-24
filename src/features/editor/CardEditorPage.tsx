@@ -2,18 +2,26 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 
 import { createCard, deleteCard, getCard, updateCard } from '../../data/cards'
+import { storeImage } from '../../data/media'
+import { mediaUrl } from '../../lib/media'
 import { Markdown } from '../../ui/Markdown'
 
 type Status = 'loading' | 'ready' | 'missing'
+type Side = 'front' | 'back'
 
 export function CardEditorPage() {
   const { deckId = '', cardId } = useParams()
   const navigate = useNavigate()
   const frontRef = useRef<HTMLTextAreaElement>(null)
+  const backRef = useRef<HTMLTextAreaElement>(null)
+  const imageRef = useRef<HTMLInputElement>(null)
+  /** La imagen se inserta donde estabas escribiendo, no siempre en el reverso. */
+  const lastFocused = useRef<Side>('back')
 
   const [front, setFront] = useState('')
   const [back, setBack] = useState('')
   const [preview, setPreview] = useState(false)
+  const [attaching, setAttaching] = useState(false)
   const [status, setStatus] = useState<Status>(cardId ? 'loading' : 'ready')
 
   useEffect(() => {
@@ -88,6 +96,34 @@ export function CardEditorPage() {
     void navigate(`/mazo/${deckId}`)
   }
 
+  /**
+   * Guarda la imagen y deja una referencia en el texto, en la posición del
+   * cursor. La imagen se queda en la base de datos aunque no llegues a guardar
+   * la carta; la recogida de basura se la lleva la próxima vez que se edita o
+   * se borra una carta.
+   */
+  async function handleImage(file: File) {
+    setAttaching(true)
+    try {
+      const item = await storeImage(file)
+      const side = lastFocused.current
+      const alt = file.name.replace(/\.[^.]+$/, '')
+      const snippet = `![${alt}](${mediaUrl(item.id)})`
+
+      const target = side === 'front' ? frontRef.current : backRef.current
+      const value = side === 'front' ? front : back
+      const at = target?.selectionStart ?? value.length
+      const needsBreak = at > 0 && !value.slice(0, at).endsWith('\n')
+      const inserted = `${needsBreak ? '\n\n' : ''}${snippet}\n`
+      const next = value.slice(0, at) + inserted + value.slice(at)
+
+      if (side === 'front') setFront(next)
+      else setBack(next)
+    } finally {
+      setAttaching(false)
+    }
+  }
+
   return (
     <section className="page">
       <Link className="back" to={`/mazo/${deckId}`}>
@@ -104,6 +140,7 @@ export function CardEditorPage() {
           rows={4}
           value={front}
           onChange={(event) => setFront(event.target.value)}
+          onFocus={() => (lastFocused.current = 'front')}
           autoFocus
         />
       </label>
@@ -111,10 +148,12 @@ export function CardEditorPage() {
       <label className="field">
         <span className="field__label">Reverso · la respuesta</span>
         <textarea
+          ref={backRef}
           className="input textarea"
           rows={6}
           value={back}
           onChange={(event) => setBack(event.target.value)}
+          onFocus={() => (lastFocused.current = 'back')}
         />
       </label>
 
@@ -122,6 +161,28 @@ export function CardEditorPage() {
         Admite Markdown, fórmulas entre <code>$…$</code> y bloques de código con{' '}
         <code>```lenguaje</code>.
       </p>
+
+      <div className="form__actions">
+        <button
+          type="button"
+          className="button button--ghost"
+          disabled={attaching}
+          onClick={() => imageRef.current?.click()}
+        >
+          {attaching ? 'Guardando imagen…' : 'Añadir imagen'}
+        </button>
+        <input
+          ref={imageRef}
+          type="file"
+          accept="image/*"
+          hidden
+          onChange={(event) => {
+            const file = event.target.files?.[0]
+            if (file) void handleImage(file)
+            event.target.value = ''
+          }}
+        />
+      </div>
 
       <div className="form__actions">
         <button type="button" className="button" disabled={!canSave} onClick={() => void handleSave()}>
