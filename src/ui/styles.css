@@ -895,3 +895,134 @@ body {
   max-height: 40vh;
   object-fit: contain;
 }
+
+/* ---------- Estadísticas ---------- */
+
+.tiles {
+  display: flex;
+  gap: 8px;
+  margin-bottom: var(--gap);
+}
+
+.tile {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 14px 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  text-align: center;
+}
+
+.tile--highlight {
+  border-color: var(--accent);
+}
+
+.tile__value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.tile--highlight .tile__value {
+  color: var(--accent);
+}
+
+.tile__label {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.chart {
+  margin: 0 0 4px;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.chart__svg {
+  display: block;
+  width: 100%;
+  height: 90px;
+}
+
+.chart__bar {
+  fill: var(--accent);
+}
+
+.chart__bar--failed {
+  /* El mismo rojo que el botón «Mal», para que el color signifique lo mismo
+     en toda la aplicación. */
+  fill: #e5484d;
+}
+
+.chart__axis {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.boxes {
+  list-style: none;
+  margin: 0 0 var(--gap);
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.boxes__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.boxes__row:last-child {
+  margin-bottom: 0;
+}
+
+.boxes__label {
+  display: flex;
+  flex-direction: column;
+  min-width: 82px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.boxes__label small {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  font-weight: 400;
+}
+
+.boxes__track {
+  flex: 1;
+  height: 8px;
+  background: var(--bg);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.boxes__fill {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--brand-violet), var(--brand-pink));
+  border-radius: 999px;
+}
+
+.boxes__count {
+  min-width: 2ch;
+  text-align: right;
+  font-weight: 600;
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}

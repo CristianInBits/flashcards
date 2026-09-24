@@ -4,6 +4,7 @@ import { backupFilename, exportBackup, readBackupFile, restoreBackup } from '../
 import { mediaSize } from '../../data/media'
 import { summarizeBackup, type Backup } from '../../domain/backup'
 import { formatBytes } from '../../lib/image'
+import { readTheme, saveTheme, type Theme } from '../../lib/theme'
 
 const STANDALONE_QUERY = '(display-mode: standalone)'
 
@@ -51,6 +52,8 @@ export function SettingsPage() {
     <section className="page">
       <h1 className="page__title">Ajustes</h1>
 
+      <ThemePicker />
+
       <dl className="rows">
         <div className="row">
           <dt className="row__label">Versión</dt>
@@ -88,6 +91,40 @@ export function SettingsPage() {
 
       <BackupSection />
     </section>
+  )
+}
+
+const THEMES: { value: Theme; label: string }[] = [
+  { value: 'system', label: 'Sistema' },
+  { value: 'light', label: 'Claro' },
+  { value: 'dark', label: 'Oscuro' },
+]
+
+function ThemePicker() {
+  const [theme, setTheme] = useState<Theme>(() => readTheme())
+
+  function choose(next: Theme) {
+    setTheme(next)
+    saveTheme(next)
+  }
+
+  return (
+    <div className="field">
+      <span className="field__label">Tema</span>
+      <div className="chips" role="group" aria-label="Tema">
+        {THEMES.map((option) => (
+          <button
+            key={option.value}
+            type="button"
+            className={theme === option.value ? 'chip is-active' : 'chip'}
+            aria-pressed={theme === option.value}
+            onClick={() => choose(option.value)}
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+    </div>
   )
 }
 

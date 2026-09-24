@@ -6,6 +6,7 @@ import { DeckPage } from '../features/decks/DeckPage'
 import { CardEditorPage } from '../features/editor/CardEditorPage'
 import { ImportPage } from '../features/import/ImportPage'
 import { SettingsPage } from '../features/settings/SettingsPage'
+import { StatsPage } from '../features/stats/StatsPage'
 import { StudyPage } from '../features/study/StudyPage'
 
 export function App() {
@@ -21,6 +22,7 @@ export function App() {
         <Route path="mazo/:deckId/importar" element={<ImportPage />} />
         <Route path="mazo/:deckId/carta/nueva" element={<CardEditorPage />} />
         <Route path="mazo/:deckId/carta/:cardId" element={<CardEditorPage />} />
+        <Route path="estadisticas" element={<StatsPage />} />
         <Route path="ajustes" element={<SettingsPage />} />
         <Route path="*" element={<DecksPage />} />
       </Route>

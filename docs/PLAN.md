@@ -105,11 +105,14 @@ interface MediaItem {
 }
 
 interface Settings {
-  theme: 'system' | 'light' | 'dark';
   apiKey?: string;       // solo en este dispositivo
   lastBackupAt?: number;
 }
 ```
+
+El **tema** no vive aquí sino en `localStorage`, porque hay que aplicarlo antes del primer
+pintado: una lectura asíncrona de IndexedDB haría que la aplicación parpadease en el tema
+equivocado cada vez que se abre.
 
 Índices: `cards` por `deckId`, por `dueDate` y compuesto `[deckId+dueDate]` — es la consulta
 caliente, "cartas vencidas de este mazo". `reviewLogs` por `reviewedAt`.
@@ -260,7 +263,7 @@ descarga directa desde una app instalada no lleva a ninguna parte.
 | 1 ✅ | Modelo de datos, Dexie, CRUD de mazos y cartas, editor con Markdown/LaTeX/código | Se pueden crear y organizar cartas |
 | 2 ✅ | Motor Leitner con tests, pantalla de estudio, volteo y gestos | **La app ya sirve para estudiar** |
 | 3 ✅ | Importadores Markdown/CSV, imágenes, copia de seguridad JSON | Se pueden volcar los apuntes que ya tienes |
-| 4 | Estadísticas, racha, tema claro/oscuro, ajustes | Versión 1.0 |
+| 4 ✅ | Estadísticas, racha, tema claro/oscuro, ajustes | Versión 1.0 |
 | 5 | Generación con IA | |
 
 La fase 2 es la frontera real: a partir de ahí la aplicación es usable a diario y todo lo demás es

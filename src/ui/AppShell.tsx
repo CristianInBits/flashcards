@@ -4,6 +4,7 @@ import { UpdatePrompt } from './UpdatePrompt'
 
 const NAV = [
   { to: '/', label: 'Mazos', section: 'mazos' },
+  { to: '/estadisticas', label: 'Progreso', section: 'estadisticas' },
   { to: '/ajustes', label: 'Ajustes', section: 'ajustes' },
 ]
 
@@ -11,7 +12,11 @@ export function AppShell() {
   const { pathname } = useLocation()
   // Las pantallas de mazo y de carta cuelgan de «Mazos», así que la pestaña
   // sigue marcada mientras se navega dentro de esa sección.
-  const current = pathname.startsWith('/ajustes') ? 'ajustes' : 'mazos'
+  const current = pathname.startsWith('/ajustes')
+    ? 'ajustes'
+    : pathname.startsWith('/estadisticas')
+      ? 'estadisticas'
+      : 'mazos'
 
   return (
     <div className="shell">
