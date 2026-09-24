@@ -1,9 +1,10 @@
 /*
  * Carti — lenguaje visual pastel.
  *
- * La idea: que la tarjeta destaque por espacio, tamaño y tipografía, no por
- * colores fuertes. Fondos muy claros, superficies casi blancas, bordes finos y
- * sombras mínimas; el color se reserva para acentos y estados.
+ * Dos temas con carácter opuesto a propósito. El claro es pastel: fondos casi
+ * blancos, bordes finos, y la tarjeta destacando por espacio y tipografía. El
+ * oscuro es lo contrario: fondo casi negro y superficies de color saturado, con
+ * la tarjeta muy por encima del fondo.
  *
  * El tema claro se define en :root y el oscuro solo redefine tokens, nunca
  * colores sueltos repartidos por los componentes. Todas las parejas de
@@ -86,59 +87,67 @@
 }
 
 /*
- * Oscuro. No es el claro invertido ni un azul marino: el fondo es un gris
- * azulado muy desaturado y los acentos bajan de saturación con él, para que
- * el color siga siendo la excepción y no el ambiente, igual que en el claro.
+ * Oscuro. Ni el claro invertido ni un gris teñido: el fondo es casi negro y
+ * las superficies llevan color saturado encima. Hay 35 puntos de luminosidad
+ * entre el fondo (L7) y la tarjeta (L42) — las primeras versiones tenían 13 y
+ * todo se fundía en la misma masa.
  */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
     color-scheme: dark;
 
-    --bg: #0a0d30;
-    --bg-soft: #06081f;
-    --surface: #2a3590;
-    --surface-soft: #33409f;
-    --card: #35419e;
-    --border: #4a58c4;
-    --border-soft: #3b47a8;
-    --divider: #3b47a8;
+    --bg: #06081f;
+    --bg-soft: #030412;
+    --surface: #2a3699;
+    --surface-soft: #3341ad;
+    --card: #303da5;
+    --border: #5464d4;
+    --border-soft: #3f4db8;
+    --divider: #3f4db8;
 
-    --text: #e8ecff;
-    --text-secondary: #c7cef8;
-    --text-muted: #b3bbe8;
+    --text: #eef1ff;
+    --text-secondary: #cdd4fb;
+    --text-muted: #b8c0ee;
 
-    --violet: #b8a6ff;
-    --violet-ink: #ddd4ff;
-    --violet-soft: #3a35a8;
-    --violet-faint: #1e2470;
-    --violet-line: #5750c9;
+    --violet: #d4c4ff;
+    --violet-ink: #ece6ff;
+    --violet-soft: #3a33b0;
+    --violet-faint: #1a2070;
+    --violet-line: #5b52d8;
 
-    --pink: #ff9fd0;
-    --pink-soft: #5c2a7a;
-    --mint-soft: #12564f;
-    --mint-ink: #6fe3c6;
-    --blue-soft: #243080;
+    --pink: #ff9ed6;
+    --pink-soft: #6b2a7d;
+    --mint-soft: #14655b;
+    --mint-ink: #7ff7cf;
+    --blue-soft: #283694;
     --yellow-soft: #3d3520;
 
-    --danger: #ff9bb3;
-    --danger-soft: #5e2a57;
-    --danger-line: #7d3a72;
-    --success: #6fe3c6;
-    --success-soft: #12564f;
-    --success-line: #1d7a6d;
-    --neutral: #8fb4ff;
-    --neutral-soft: #2c3c96;
-    --neutral-line: #3f52b8;
+    --danger: #ff9ed6;
+    --danger-soft: #6b2a5e;
+    --danger-line: #8c3c79;
+    --success: #7ff7cf;
+    --success-soft: #14655b;
+    --success-line: #1f8a79;
+    --neutral: #c6b5ff;
+    --neutral-soft: #332f9e;
+    --neutral-line: #4a43c4;
+    /* Las dos cartas decorativas de detrás de la principal. */
+    --stack-violet: #6a5cf5;
+    --stack-pink: #d94f9c;
 
     /*
-     * Tres manchas difuminadas sobre el índigo. Las opacidades no son
-     * estéticas sino calculadas: donde las tres se solapan aclaran el fondo,
-     * y el texto apagado encima tiene que seguir pasando el 4.5:1. A 18/16/13
-     * el peor solape da 4.76; con las opacidades que parecían bien a ojo
-     * (55/32/22) bajaba a 2.08.
+
+     * Tres manchas difuminadas sobre el fondo. Las opacidades están calculadas,
+
+     * no elegidas a ojo: donde las tres se solapan aclaran el fondo y el texto
+
+     * apagado encima tiene que seguir pasando el 4.5:1. A 18/16/13 el peor
+
+     * solape da 6.11; con las que quedaban bien a primera vista (55/32/22)
+
+     * bajaba a 2.08.
+
      */
-    --stack-violet: #4a3cc4;
-    --stack-pink: #8f3a86;
 
     --bg-mesh:
       radial-gradient(circle at 18% 6%, rgb(129 78 255 / 0.18), transparent 45%),
@@ -153,51 +162,58 @@
 :root[data-theme='dark'] {
   color-scheme: dark;
 
-  --bg: #0a0d30;
-  --bg-soft: #06081f;
-  --surface: #2a3590;
-  --surface-soft: #33409f;
-  --card: #35419e;
-  --border: #4a58c4;
-  --border-soft: #3b47a8;
-  --divider: #3b47a8;
+  --bg: #06081f;
+  --bg-soft: #030412;
+  --surface: #2a3699;
+  --surface-soft: #3341ad;
+  --card: #303da5;
+  --border: #5464d4;
+  --border-soft: #3f4db8;
+  --divider: #3f4db8;
 
-  --text: #e8ecff;
-  --text-secondary: #c7cef8;
-  --text-muted: #b3bbe8;
+  --text: #eef1ff;
+  --text-secondary: #cdd4fb;
+  --text-muted: #b8c0ee;
 
-  --violet: #b8a6ff;
-  --violet-ink: #ddd4ff;
-  --violet-soft: #3a35a8;
-  --violet-faint: #1e2470;
-  --violet-line: #5750c9;
+  --violet: #d4c4ff;
+  --violet-ink: #ece6ff;
+  --violet-soft: #3a33b0;
+  --violet-faint: #1a2070;
+  --violet-line: #5b52d8;
 
-  --pink: #ff9fd0;
-  --pink-soft: #5c2a7a;
-  --mint-soft: #12564f;
-  --mint-ink: #6fe3c6;
-  --blue-soft: #243080;
+  --pink: #ff9ed6;
+  --pink-soft: #6b2a7d;
+  --mint-soft: #14655b;
+  --mint-ink: #7ff7cf;
+  --blue-soft: #283694;
   --yellow-soft: #3d3520;
 
-  --danger: #ff9bb3;
-  --danger-soft: #5e2a57;
-  --danger-line: #7d3a72;
-  --success: #6fe3c6;
-  --success-soft: #12564f;
-  --success-line: #1d7a6d;
-  --neutral: #8fb4ff;
-  --neutral-soft: #2c3c96;
-  --neutral-line: #3f52b8;
+  --danger: #ff9ed6;
+  --danger-soft: #6b2a5e;
+  --danger-line: #8c3c79;
+  --success: #7ff7cf;
+  --success-soft: #14655b;
+  --success-line: #1f8a79;
+  --neutral: #c6b5ff;
+  --neutral-soft: #332f9e;
+  --neutral-line: #4a43c4;
+  /* Las dos cartas decorativas de detrás de la principal. */
+  --stack-violet: #6a5cf5;
+  --stack-pink: #d94f9c;
 
   /*
-   * Tres manchas difuminadas sobre el índigo. Las opacidades no son
-   * estéticas sino calculadas: donde las tres se solapan aclaran el fondo,
-   * y el texto apagado encima tiene que seguir pasando el 4.5:1. A 18/16/13
-   * el peor solape da 4.76; con las opacidades que parecían bien a ojo
-   * (55/32/22) bajaba a 2.08.
+
+   * Tres manchas difuminadas sobre el fondo. Las opacidades están calculadas,
+
+   * no elegidas a ojo: donde las tres se solapan aclaran el fondo y el texto
+
+   * apagado encima tiene que seguir pasando el 4.5:1. A 18/16/13 el peor
+
+   * solape da 6.11; con las que quedaban bien a primera vista (55/32/22)
+
+   * bajaba a 2.08.
+
    */
-  --stack-violet: #4a3cc4;
-  --stack-pink: #8f3a86;
 
   --bg-mesh:
     radial-gradient(circle at 18% 6%, rgb(129 78 255 / 0.18), transparent 45%),
@@ -251,6 +267,10 @@ body {
 .shell__main {
   position: relative;
   z-index: 1;
+  /* Las cartas decorativas giradas asoman por los lados; se recortan aquí.
+     clip y no hidden: hidden crearía un contenedor de scroll y rompería la
+     cabecera pegajosa. */
+  overflow-x: clip;
 }
 
 .shell {
@@ -875,12 +895,12 @@ body {
 
 .flashcard__stack--lavender {
   background: var(--stack-violet);
-  transform: rotate(-4deg) translate(-9px, -3px);
+  transform: rotate(-7deg) translate(-17px, -9px);
 }
 
 .flashcard__stack--pink {
   background: var(--stack-pink);
-  transform: rotate(4deg) translate(10px, 4px);
+  transform: rotate(7deg) translate(18px, 10px);
 }
 
 .flashcard__inner {
