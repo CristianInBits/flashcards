@@ -1,5 +1,5 @@
-import { summarizeStats, type Stats } from '../domain/stats'
-import { today } from '../lib/date'
+import { computeStreaks, summarizeStats, type Stats, type Streaks } from '../domain/stats'
+import { today, toIsoDate } from '../lib/date'
 import { db } from './db'
 
 /**
@@ -10,4 +10,13 @@ import { db } from './db'
 export async function loadStats(rangeDays: number): Promise<Stats> {
   const [logs, cards] = await Promise.all([db.reviewLogs.toArray(), db.cards.toArray()])
   return summarizeStats(logs, cards, today(), rangeDays)
+}
+
+/** Solo la racha, para la cabecera: no hace falta leer también las cartas. */
+export async function loadStreak(): Promise<Streaks> {
+  const logs = await db.reviewLogs.toArray()
+  return computeStreaks(
+    logs.map((log) => toIsoDate(new Date(log.reviewedAt))),
+    today(),
+  )
 }

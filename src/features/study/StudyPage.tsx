@@ -191,7 +191,7 @@ export function StudyPage() {
       )}
 
       <p className="study__help">
-        Caja {card.box} · desliza a la izquierda para Mal y a la derecha para Bien
+        Caja {card.box} · desliza a la izquierda para Mal, a la derecha para Bien
       </p>
     </section>
   )

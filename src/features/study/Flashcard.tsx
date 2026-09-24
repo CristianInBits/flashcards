@@ -32,6 +32,11 @@ export function Flashcard({ front, back, flipped, onFlip, offset, dragging, hand
       }}
       {...handlers}
     >
+      {/* Decorativas: la pila de tres tarjetas del icono. No reciben eventos,
+          así que el gesto sigue yendo a la carta de delante. */}
+      <span className="flashcard__stack flashcard__stack--lavender" aria-hidden />
+      <span className="flashcard__stack flashcard__stack--pink" aria-hidden />
+
       {/* Las dos caras comparten celda de la rejilla: la altura del contenedor
           es la de la más alta, así el giro no da un salto de altura. */}
       <button
@@ -40,7 +45,7 @@ export function Flashcard({ front, back, flipped, onFlip, offset, dragging, hand
         onClick={onFlip}
         aria-live="polite"
       >
-        <div className="flashcard__face" aria-hidden={flipped}>
+        <div className="flashcard__face flashcard__face--front" aria-hidden={flipped}>
           <Markdown>{front}</Markdown>
           {!flipped && <span className="flashcard__nudge">Toca para ver la respuesta</span>}
         </div>

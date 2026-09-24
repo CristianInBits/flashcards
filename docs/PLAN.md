@@ -174,6 +174,22 @@ sobrevive si algún día se envuelve con Capacitor o se rehace la interfaz.
 los textos que ve el usuario y los comentarios en español. Las rutas también en español (`/ajustes`),
 porque son visibles en la barra de direcciones.
 
+### Lenguaje visual
+
+Pastel y de bajo contraste entre superficies: fondos muy claros, tarjetas en blanco roto, bordes
+finos y sombras mínimas. **La tarjeta destaca por espacio, tamaño y tipografía, no por colores
+fuertes**; el violeta de marca se reserva para acentos, estado activo e indicadores, y nunca se usa
+en superficies grandes. El rosa, el verde y el azul quedan para estados.
+
+Todo son tokens CSS en `src/ui/styles.css`: el tema claro los define en `:root` y el oscuro solo
+los redefine. El oscuro no es el claro invertido — los pasteles suben de saturación para que no se
+apaguen, y el fondo es el azul marino del icono para que la pantalla de arranque no dé un salto de
+color al instalar.
+
+**Cada pareja de texto y fondo llega al 4.5:1 de la WCAG AA.** Se midieron una a una y varias hubo
+que oscurecerlas: una paleta pastel se queda corta de contraste con muchísima facilidad, y la app
+se usa a menudo en la calle.
+
 ### Dependencias previstas
 
 | Necesidad | Elección | Nota |

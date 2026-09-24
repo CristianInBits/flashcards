@@ -67,7 +67,7 @@ export function StatsPage() {
 
       <h2 className="page__title page__title--small">Últimos {RANGE_DAYS} días</h2>
       <ActivityChart daily={stats.daily} />
-      <p className="hint">La parte roja de cada barra son las cartas falladas.</p>
+      <p className="hint">La parte rosa de cada barra son las cartas falladas.</p>
 
       <h2 className="page__title page__title--small">Reparto por cajas</h2>
       <ul className="boxes">
