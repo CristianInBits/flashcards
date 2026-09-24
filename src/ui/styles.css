@@ -74,6 +74,11 @@
   --nav-height: 68px;
 
   /* El fondo del tema claro es plano; el oscuro lo redefine. */
+  /* Las dos cartas decorativas de detras de la principal. Tokens propios
+     porque los de los botones no pueden subir de brillo con ellas. */
+  --stack-violet: #e8e2ff;
+  --stack-pink: #fce4ee;
+
   --bg-mesh: none;
 
   --font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -89,41 +94,41 @@
   :root:not([data-theme='light']) {
     color-scheme: dark;
 
-    --bg: #141a4d;
-    --bg-soft: #0e1338;
-    --surface: #222b73;
-    --surface-soft: #2a3486;
-    --card: #26307e;
-    --border: #3a46a3;
-    --border-soft: #2e3a8c;
-    --divider: #2e3a8c;
+    --bg: #0a0d30;
+    --bg-soft: #06081f;
+    --surface: #2a3590;
+    --surface-soft: #33409f;
+    --card: #35419e;
+    --border: #4a58c4;
+    --border-soft: #3b47a8;
+    --divider: #3b47a8;
 
     --text: #e8ecff;
-    --text-secondary: #c0c8f5;
+    --text-secondary: #c7cef8;
     --text-muted: #b3bbe8;
 
     --violet: #b8a6ff;
     --violet-ink: #ddd4ff;
-    --violet-soft: #332f8f;
-    --violet-faint: #232a6b;
-    --violet-line: #45419f;
+    --violet-soft: #3a35a8;
+    --violet-faint: #1e2470;
+    --violet-line: #5750c9;
 
     --pink: #ff9fd0;
-    --pink-soft: #4a2565;
-    --mint-soft: #0f4440;
+    --pink-soft: #5c2a7a;
+    --mint-soft: #12564f;
     --mint-ink: #6fe3c6;
-    --blue-soft: #1e2a6e;
+    --blue-soft: #243080;
     --yellow-soft: #3d3520;
 
     --danger: #ff9bb3;
-    --danger-soft: #4d2248;
-    --danger-line: #68315e;
+    --danger-soft: #5e2a57;
+    --danger-line: #7d3a72;
     --success: #6fe3c6;
-    --success-soft: #0f4440;
-    --success-line: #1a6359;
+    --success-soft: #12564f;
+    --success-line: #1d7a6d;
     --neutral: #8fb4ff;
-    --neutral-soft: #26357f;
-    --neutral-line: #37489c;
+    --neutral-soft: #2c3c96;
+    --neutral-line: #3f52b8;
 
     /*
      * Tres manchas difuminadas sobre el índigo. Las opacidades no son
@@ -132,6 +137,9 @@
      * el peor solape da 4.76; con las opacidades que parecían bien a ojo
      * (55/32/22) bajaba a 2.08.
      */
+    --stack-violet: #4a3cc4;
+    --stack-pink: #8f3a86;
+
     --bg-mesh:
       radial-gradient(circle at 18% 6%, rgb(129 78 255 / 0.18), transparent 45%),
       radial-gradient(circle at 88% 32%, rgb(255 92 176 / 0.16), transparent 42%),
@@ -145,41 +153,41 @@
 :root[data-theme='dark'] {
   color-scheme: dark;
 
-  --bg: #141a4d;
-  --bg-soft: #0e1338;
-  --surface: #222b73;
-  --surface-soft: #2a3486;
-  --card: #26307e;
-  --border: #3a46a3;
-  --border-soft: #2e3a8c;
-  --divider: #2e3a8c;
+  --bg: #0a0d30;
+  --bg-soft: #06081f;
+  --surface: #2a3590;
+  --surface-soft: #33409f;
+  --card: #35419e;
+  --border: #4a58c4;
+  --border-soft: #3b47a8;
+  --divider: #3b47a8;
 
   --text: #e8ecff;
-  --text-secondary: #c0c8f5;
+  --text-secondary: #c7cef8;
   --text-muted: #b3bbe8;
 
   --violet: #b8a6ff;
   --violet-ink: #ddd4ff;
-  --violet-soft: #332f8f;
-  --violet-faint: #232a6b;
-  --violet-line: #45419f;
+  --violet-soft: #3a35a8;
+  --violet-faint: #1e2470;
+  --violet-line: #5750c9;
 
   --pink: #ff9fd0;
-  --pink-soft: #4a2565;
-  --mint-soft: #0f4440;
+  --pink-soft: #5c2a7a;
+  --mint-soft: #12564f;
   --mint-ink: #6fe3c6;
-  --blue-soft: #1e2a6e;
+  --blue-soft: #243080;
   --yellow-soft: #3d3520;
 
   --danger: #ff9bb3;
-  --danger-soft: #4d2248;
-  --danger-line: #68315e;
+  --danger-soft: #5e2a57;
+  --danger-line: #7d3a72;
   --success: #6fe3c6;
-  --success-soft: #0f4440;
-  --success-line: #1a6359;
+  --success-soft: #12564f;
+  --success-line: #1d7a6d;
   --neutral: #8fb4ff;
-  --neutral-soft: #26357f;
-  --neutral-line: #37489c;
+  --neutral-soft: #2c3c96;
+  --neutral-line: #3f52b8;
 
   /*
    * Tres manchas difuminadas sobre el índigo. Las opacidades no son
@@ -188,6 +196,9 @@
    * el peor solape da 4.76; con las opacidades que parecían bien a ojo
    * (55/32/22) bajaba a 2.08.
    */
+  --stack-violet: #4a3cc4;
+  --stack-pink: #8f3a86;
+
   --bg-mesh:
     radial-gradient(circle at 18% 6%, rgb(129 78 255 / 0.18), transparent 45%),
     radial-gradient(circle at 88% 32%, rgb(255 92 176 / 0.16), transparent 42%),
@@ -863,12 +874,12 @@ body {
 }
 
 .flashcard__stack--lavender {
-  background: var(--violet-soft);
+  background: var(--stack-violet);
   transform: rotate(-4deg) translate(-9px, -3px);
 }
 
 .flashcard__stack--pink {
-  background: var(--pink-soft);
+  background: var(--stack-pink);
   transform: rotate(4deg) translate(10px, 4px);
 }
 

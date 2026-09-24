@@ -206,7 +206,11 @@ documenta: las superficies oscuras se derivan de una paleta neutra de croma bajo
 derivarlas del color de marca para que dejen de ser grises.
 
 El oscuro actual es un índigo con las superficies a S54, más del doble, y un degradado de tres
-manchas difuminadas sobre el fondo. **Las opacidades de las manchas están calculadas, no elegidas
+manchas difuminadas sobre el fondo. El fondo es muy oscuro y las superficies muy claras a
+propósito: **hay 30 puntos de luminosidad entre el fondo y la tarjeta**, frente a los 13 de la
+primera versión, que era lo que hacía que todo se fundiera en una masa. Las dos tarjetas
+decorativas de detrás tienen tokens propios (`--stack-violet`, `--stack-pink`) porque comparten
+color con los botones y con la racha, y no podían subir de brillo sin arrastrarlos. **Las opacidades de las manchas están calculadas, no elegidas
 a ojo**: donde las tres se solapan aclaran el fondo, y el texto apagado encima tiene que seguir
 pasando el 4.5:1. A 18/16/13% el peor solape da 4.76; con las opacidades que quedaban bien a
 primera vista (55/32/22) bajaba a 2.08.
