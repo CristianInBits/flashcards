@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { Link } from 'react-router'
 
@@ -51,7 +51,9 @@ export function DecksPage() {
         </p>
       </header>
 
-      {summaries.length > 0 && (
+      {/* Mientras se crea un mazo, fuera los controles de la lista: estás en una
+          tarea, no navegando. El botón de estudiar además competiría con «Crear». */}
+      {summaries.length > 0 && !creating && (
         <>
           {totalDue > 0 && (
             <Link className="button button--wide" to="/estudiar">
@@ -231,12 +233,29 @@ function PlusIcon() {
 }
 
 function NewDeckForm({ onClose }: { onClose: () => void }) {
+  const formRef = useRef<HTMLFormElement>(null)
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [tags, setTags] = useState('')
   const [saving, setSaving] = useState(false)
 
   const canSave = name.trim().length > 0 && !saving
+
+  // El botón que abre el formulario está pegado abajo y el formulario sale
+  // arriba, así que sin esto puede aparecer fuera de la pantalla. Antes lo
+  // arrastraba el foco automático del campo, que era justo lo que abría el
+  // teclado sin pedirlo.
+  // El botón que abre el formulario está pegado abajo, así que sin esto el
+  // formulario aparece fuera de la pantalla. Antes lo arrastraba el foco
+  // automático del campo, que era justo lo que abría el teclado sin pedirlo.
+  //
+  // Se sube del todo en vez de desplazarse hasta el formulario: al abrirlo
+  // desaparecen los controles de la lista, así que el formulario ya es lo
+  // primero de la página. scrollIntoView dependía de la geometría y el
+  // navegador la reajustaba por su cuenta al crecer la página.
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' })
+  }, [])
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault()
@@ -247,7 +266,7 @@ function NewDeckForm({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <form className="form" onSubmit={(event) => void handleSubmit(event)}>
+    <form ref={formRef} className="form" onSubmit={(event) => void handleSubmit(event)}>
       <label className="field">
         <span className="field__label">Nombre</span>
         <input
@@ -255,7 +274,6 @@ function NewDeckForm({ onClose }: { onClose: () => void }) {
           value={name}
           onChange={(event) => setName(event.target.value)}
           placeholder="Anatomía, Alemán A2, Estructuras de datos…"
-          autoFocus
         />
       </label>
 

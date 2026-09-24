@@ -141,7 +141,6 @@ export function CardEditorPage() {
           value={front}
           onChange={(event) => setFront(event.target.value)}
           onFocus={() => (lastFocused.current = 'front')}
-          autoFocus
         />
       </label>
 

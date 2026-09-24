@@ -720,6 +720,8 @@ body {
 /* ---------- Formularios ---------- */
 
 .form {
+  /* Para que al desplazarse hasta él no quede debajo de la cabecera pegajosa. */
+  scroll-margin-top: calc(var(--header-height) + 16px);
   display: flex;
   flex-direction: column;
   gap: 4px;
